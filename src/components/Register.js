@@ -55,7 +55,6 @@ const Register = () => {
     };
     UserService.createAccount(accountData)
       .then(() => {
-        setSuccesMessage(true);
         setEmail("");
         setPassword("");
         setChannelName("");
