@@ -6,6 +6,10 @@ class UserService {
   createAccount(user) {
     return axios.post(`${BASE_URL}/register`, user);
   }
+
+  login(userData) {
+    return axios.post(`${BASE_URL}/login`, userData);
+  }
 }
 
 export default new UserService();
