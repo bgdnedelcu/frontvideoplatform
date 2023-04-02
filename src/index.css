@@ -11,3 +11,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.header {
+  margin: 0;
+  background: black;
+  opacity: 0.9;
+  height: 20px;
+  min-width: 100%;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 5px;
+}
+
+.videoPage {
+  background-color: black;
+  min-height: 100vh;
+}
+
+.video {
+  min-width: 100%;
+  height: 900px;
+  padding-top: 90px;
+
+
+}
+
+.videoInfo {
+  background-color: blue;
+  min-width: 100%;
+}

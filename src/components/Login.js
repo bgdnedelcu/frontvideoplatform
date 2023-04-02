@@ -54,6 +54,7 @@ const Login = () => {
         const token = response.headers.get("Access-Token");
         localStorage.setItem("token", JSON.stringify(token));
         navigate("/home");
+        window.location.reload();
       })
       .catch((error) => {
         console.error("There was an error!", error);
