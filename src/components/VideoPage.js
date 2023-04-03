@@ -13,7 +13,7 @@ function VideoPage() {
   const [videoDescription, setVideoDescription] = useState("");
   const [videoChannel, setVideoChannel] = useState("");
   const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [commenter, setCommenter] = useState("");
 
   const createVideoUrl = () => {
@@ -21,37 +21,6 @@ function VideoPage() {
       `${"http://localhost:8081/videoplatform/api/video/play"}/${videoId}`
     );
   };
-
-  // const loadVideoDetails = () => {
-  //   const config = {
-  //     headers: { Authorization: JwtService.addAuthorization() },
-  //   };
-
-  //   axios
-  //     .get(
-  //       `http://localhost:8081/videoplatform/api/video/videoById/${videoId}`,
-  //       config
-  //     )
-  //     .then((response) => {
-  //       setVideoTitle(response.data.title);
-  //       setVideoDescription(response.data.description);
-  //       axios
-  //         .get(
-  //           `http://localhost:8080/videoplatform/api/account/userById/${response.data.idUser}`,
-  //           config
-  //         )
-  //         .then((response) => {
-  //           setVideoChannel(response.data.channelName);
-  //           console.log(response.data);
-  //         })
-  //         .catch((error) => {
-  //           console.error(error);
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
 
   const loadVideoDetails = () => {
     const config = {
@@ -88,6 +57,25 @@ function VideoPage() {
       .then((response) => {
         console.log(response.data);
         setCommenter(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const addLike = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .post(
+        `http://localhost:8081/videoplatform/api/video/like/${videoId}`,
+        {},
+        config
+      )
+      .then(() => {
+        setLikes(likes + 1);
+        setLiked(true);
       })
       .catch((error) => {
         console.error(error);
@@ -140,6 +128,15 @@ function VideoPage() {
           <Col>
             <div className="mt-3">
               <Comments videoId={videoId} commenter={commenter} />
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="mt-3">
+              <Button variant="primary" disabled={liked} onClick={addLike}>
+                {liked ? `Liked (${likes})` : `Like (${likes})`}
+              </Button>
             </div>
           </Col>
         </Row>
