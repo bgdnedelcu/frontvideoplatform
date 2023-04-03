@@ -1,47 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import axios from "axios";
+import JwtService from "../service/jwtservice";
 
-function Comments() {
+function Comments({ videoId }) {
   const [comments, setComments] = useState([]);
 
-  const handleCommentSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const commentText = formData.get("commentText");
+  const loadComments = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
 
-    setComments((prevComments) => [
-      ...prevComments,
-      { text: commentText, channelName: "ChannelName", date: new Date() },
-    ]);
-
-    // clear form after submit
-    event.target.reset();
+    axios
+      .get(
+        `http://localhost:8081/videoplatform/api/video/commentsByVideoId/${videoId}`,
+        config
+      )
+      .then((response) => {
+        setComments(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
+
+  useEffect(() => {
+    loadComments();
+  }, []);
 
   return (
     <div>
-      <Form onSubmit={handleCommentSubmit}>
-        <Form.Group controlId="commentText">
-          <Form.Label>Adaugă un comentariu</Form.Label>
-          <Form.Control as="textarea" rows={3} name="commentText" />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Adaugă
-        </Button>
-      </Form>
-      <div className="mt-3">
-        <h3>Comentarii</h3>
-        {comments.map((comment) => (
-          <div key={comment.date}>
-            <p>
-              <strong>{comment.channelName}:</strong> {comment.text}
-            </p>
-            <p>{comment.date.toLocaleString()}</p>
+      {comments.map((comment) => (
+        <div key={comment.idComment} className="card mb-3">
+          <div className="card-header">{comment.channelName}</div>
+          <div className="card-body">
+            <p className="card-text">{comment.comment}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
+
 
 export default Comments;

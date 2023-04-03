@@ -2,76 +2,102 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Header from "./Header";
 import JwtService from "../service/jwtservice";
-import CommentSection from "./CommentSection";
+import AddComment from "./AddComment";
+import Comments from "./Comments";
 import axios from "axios";
 
 function VideoPage() {
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoId, setVideoId] = useState(1);
+  const [videoId, setVideoId] = useState(10);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoChannel, setVideoChannel] = useState("");
-  const [comments, setComments] = useState([]);
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [commenter, setCommenter] = useState("");
 
   const createVideoUrl = () => {
     setVideoUrl(
       `${"http://localhost:8081/videoplatform/api/video/play"}/${videoId}`
     );
   };
-  
-  const loadVideoDetails = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
 
-    axios
-      .get(
-        `http://localhost:8081/videoplatform/api/video/videoById/${videoId}`,
-        config
-      )
-      .then((response) => {
-        setVideoTitle(response.data.title);
-        setVideoDescription(response.data.description);
-        axios
-          .get(
-            `http://localhost:8080/videoplatform/api/account/userById/${response.data.idUser}`,
-            config
-          )
-          .then((response) => {
-            setVideoChannel(response.data.channelName);
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  // const loadVideoOwner = (e) => {
+  // const loadVideoDetails = () => {
   //   const config = {
   //     headers: { Authorization: JwtService.addAuthorization() },
   //   };
 
   //   axios
   //     .get(
-  //       `http://localhost:8080/videoplatform/api/account/userById/${videoOwnerId}`,
+  //       `http://localhost:8081/videoplatform/api/video/videoById/${videoId}`,
   //       config
   //     )
   //     .then((response) => {
-  //       setVideoChannel(response.data.channelName);
-  //       console.log(response.data);
+  //       setVideoTitle(response.data.title);
+  //       setVideoDescription(response.data.description);
+  //       axios
+  //         .get(
+  //           `http://localhost:8080/videoplatform/api/account/userById/${response.data.idUser}`,
+  //           config
+  //         )
+  //         .then((response) => {
+  //           setVideoChannel(response.data.channelName);
+  //           console.log(response.data);
+  //         })
+  //         .catch((error) => {
+  //           console.error(error);
+  //         });
   //     })
   //     .catch((error) => {
   //       console.error(error);
   //     });
   // };
 
+  const loadVideoDetails = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .get(
+        `http://localhost:8081/videoplatform/api/video/getVideoDetails/${videoId}`,
+        config
+      )
+
+      .then((response) => {
+        setVideoTitle(response.data.videoTitle);
+        setVideoDescription(response.data.description);
+        setVideoChannel(response.data.videoChannelName);
+        setLikes(response.data.likes);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const loadCommenter = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+
+    axios
+      .get(
+        "http://localhost:8080/videoplatform/api/account/channelName",
+        config
+      )
+      .then((response) => {
+        console.log(response.data);
+        setCommenter(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   useEffect(() => {
     createVideoUrl();
     loadVideoDetails();
+    loadCommenter();
   }, []);
 
   return (
@@ -104,18 +130,16 @@ function VideoPage() {
         </Row>
         <Row>
           <Col>
-            <Form>
-              <Form.Group controlId="commentText">
-                <Form.Label>Adaugă un comentariu</Form.Label>
-                <Form.Control as="textarea" rows={3} />
-              </Form.Group>
-              <Button variant="primary" type="submit">
-                Adaugă
-              </Button>
-            </Form>
             <div className="mt-3">
-              <h3>Comentarii</h3>
-              <CommentSection comments={comments} />
+              <h5>Comment as {commenter}</h5>
+              <AddComment idVideo={videoId} />
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="mt-3">
+              <Comments videoId={videoId} commenter={commenter} />
             </div>
           </Col>
         </Row>
