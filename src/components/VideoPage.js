@@ -1,27 +1,78 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Header from "./Header";
-import VideoService from "../service/VideoService";
+import JwtService from "../service/jwtservice";
+import CommentSection from "./CommentSection";
+import axios from "axios";
 
 function VideoPage() {
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoId, setVideoId] = useState("10");
+  const [videoId, setVideoId] = useState(1);
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoDescription, setVideoDescription] = useState("");
+  const [videoChannel, setVideoChannel] = useState("");
+  const [comments, setComments] = useState([]);
 
-  // const callVideo = () => {
-  //   VideoService.playVideo(videoId)
+  const createVideoUrl = () => {
+    setVideoUrl(
+      `${"http://localhost:8081/videoplatform/api/video/play"}/${videoId}`
+    );
+  };
+  
+  const loadVideoDetails = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+
+    axios
+      .get(
+        `http://localhost:8081/videoplatform/api/video/videoById/${videoId}`,
+        config
+      )
+      .then((response) => {
+        setVideoTitle(response.data.title);
+        setVideoDescription(response.data.description);
+        axios
+          .get(
+            `http://localhost:8080/videoplatform/api/account/userById/${response.data.idUser}`,
+            config
+          )
+          .then((response) => {
+            setVideoChannel(response.data.channelName);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  // const loadVideoOwner = (e) => {
+  //   const config = {
+  //     headers: { Authorization: JwtService.addAuthorization() },
+  //   };
+
+  //   axios
+  //     .get(
+  //       `http://localhost:8080/videoplatform/api/account/userById/${videoOwnerId}`,
+  //       config
+  //     )
   //     .then((response) => {
-  //       setVideoUrl(
-  //         "localhost:8081/videoplatform/api/video/play/19"
-  //       );
+  //       setVideoChannel(response.data.channelName);
+  //       console.log(response.data);
   //     })
   //     .catch((error) => {
-  //       console.error("There was an error!", error);
+  //       console.error(error);
   //     });
   // };
 
-  // useEffect(() => {
-  //   callVideo();
-  // }, []);
+  useEffect(() => {
+    createVideoUrl();
+    loadVideoDetails();
+  }, []);
 
   return (
     <>
@@ -31,10 +82,11 @@ function VideoPage() {
           <Col>
             <div className="embed-responsive embed-responsive-16by9">
               <video className="video embed-responsive-item" controls>
-                <source
-                  src="http://localhost:8081/videoplatform/api/video/play/19"
-                  type="video/mp4"
-                />
+                {videoUrl ? (
+                  <source src={videoUrl} type="video/mp4" />
+                ) : (
+                  <p>Cannot load video right now</p>
+                )}
               </video>
             </div>
           </Col>
@@ -42,18 +94,11 @@ function VideoPage() {
         <Row>
           <Col>
             <div className="p-3">
-              <h3 className="mb-3">Titlul videoclipului</h3>
+              <h3 className="mb-3">{videoTitle}</h3>
               <p className="mb-0">
-                De la<a href="#">Numele utilizatorului</a>
+                De la <a href="#">{videoChannel}</a>
               </p>
-              <p className="mb-0">
-                Descrierea videoclipului Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Nullam ac fermentum nibh, nec commodo magna. Ut
-                rutrum diam et ligula ultricies, vel consequat magna tristique.
-                Vivamus congue lacinia ultricies. Praesent a dui lobortis,
-                molestie mi vel, dignissim tellus. Curabitur vitae velit nulla.
-                Ut pharetra nisi eget mauris semper posuere.{" "}
-              </p>
+              <p className="mb-0">{videoDescription} </p>
             </div>
           </Col>
         </Row>
@@ -70,7 +115,7 @@ function VideoPage() {
             </Form>
             <div className="mt-3">
               <h3>Comentarii</h3>
-              <p>Aici vor apărea comentariile utilizatorilor</p>
+              <CommentSection comments={comments} />
             </div>
           </Col>
         </Row>

@@ -10,6 +10,10 @@ class UserService {
   login(userData) {
     return axios.post(`${BASE_URL}/login`, userData);
   }
+
+  getUserById(id) {
+    return axios.get(`${BASE_URL}/getUserById/${id}`);
+  }
 }
 
 export default new UserService();
