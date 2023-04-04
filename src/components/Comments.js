@@ -28,6 +28,10 @@ function Comments({ videoId }) {
     loadComments();
   }, []);
 
+  useEffect(() => {
+    console.log("Se rendereaza");
+  }, [comments]);
+
   return (
     <div>
       {comments.map((comment) => (
@@ -41,6 +45,5 @@ function Comments({ videoId }) {
     </div>
   );
 }
-
 
 export default Comments;
