@@ -3,9 +3,11 @@ import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Logout from "./Logout";
+import JwtService from "../service/jwtservice";
 
 const MobileMenu = () => {
   const [show, setShow] = React.useState(false);
+  const user = JwtService.getUser();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -21,6 +23,7 @@ const MobileMenu = () => {
           <Modal.Title>Menu</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <h6>{user}</h6>
           <Logout />
         </Modal.Body>
       </Modal>

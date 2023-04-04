@@ -37,7 +37,7 @@ const AddComment = ({ idVideo }) => {
   return (
     <form onSubmit={saveComment} className="mb-3">
       <div className="row">
-        <div className="col-md-8"> {/* Reduce the width of the comment field */}
+        <div className="col-md-8">
           <div className="form-floating">
             <textarea
               className="form-control"
@@ -46,12 +46,11 @@ const AddComment = ({ idVideo }) => {
               value={content}
               onChange={changeContent}
             ></textarea>
-            {/* Remove the label and use the placeholder instead */}
           </div>
         </div>
-        <div className="col-md-4 d-flex align-items-end justify-content-end"> {/* Align the button to the right */}
+        <div className="col-md-4 d-flex align-items-end justify-content-start">
           <button className="btn btn-primary" type="submit">
-            Adaugă comentariu
+            Add Comment
           </button>
         </div>
       </div>

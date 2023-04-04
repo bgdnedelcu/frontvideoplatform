@@ -42,8 +42,28 @@ body {
 
 }
 
-.videoInfo {
-  background-color: blue;
-  min-width: 100%;
+.videoChannel {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+
+.like-button {
+  padding-right: 100px;
+}
+
+.videoDescription {
+  height: auto;
+}
+
+.videoDescription p {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.like-button button.liked {
+  background-color: darkblue;
+  color: white;
+}

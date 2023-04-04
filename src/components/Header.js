@@ -4,7 +4,7 @@ import MobileMenu from "./MobileMenu";
 import JwtService from "../service/jwtservice";
 
 const Header = () => {
-  const user = JwtService.getUser();
+  
 
   return (
     <Navbar bg="light" variant="light" fixed="top">
@@ -23,7 +23,6 @@ const Header = () => {
           </Form>
           <div className="header-right d-flex align-items-center">
             <MobileMenu />
-            {user}
           </div>
         </Navbar.Collapse>
       </Container>

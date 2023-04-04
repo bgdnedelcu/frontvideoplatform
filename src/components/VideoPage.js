@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "./Header";
 import JwtService from "../service/jwtservice";
 import AddComment from "./AddComment";
@@ -15,6 +15,9 @@ function VideoPage() {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [commenter, setCommenter] = useState("");
+  const [showDescription, setShowDescription] = useState(false); // new state variable
+
+  // rest of the code
 
   const createVideoUrl = () => {
     setVideoUrl(
@@ -74,8 +77,32 @@ function VideoPage() {
         config
       )
       .then(() => {
-        setLikes(likes + 1);
-        setLiked(true);
+        if (!liked) {
+          setLikes(likes + 1);
+          setLiked(true);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const undoLike = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .post(
+        `http://localhost:8081/videoplatform/api/video/undoLike/${videoId}`,
+        {},
+        config
+      )
+      .then(() => {
+        if (liked) {
+          setLikes(likes - 1);
+          setLiked(false);
+          console.log("CALL")
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -105,14 +132,40 @@ function VideoPage() {
             </div>
           </Col>
         </Row>
-        <Row>
+        <Row className="videoInfo">
           <Col>
             <div className="p-3">
-              <h3 className="mb-3">{videoTitle}</h3>
-              <p className="mb-0">
-                De la <a href="#">{videoChannel}</a>
-              </p>
-              <p className="mb-0">{videoDescription} </p>
+              <div className="mb-3 videoTitle">
+                <h3>{videoTitle}</h3>
+              </div>
+              <div className="mb-3 videoChannel">
+                <p>
+                  From <a href="#">{videoChannel}</a>
+                </p>
+                <div className="like-button">
+                  {liked ? (
+                    <Button variant="primary" className="liked" onClick={undoLike}>
+                      Liked ({likes})
+                    </Button>
+                  ) : (
+                    <Button variant="primary" onClick={addLike}>
+                      Like ({likes})
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div
+                className="mb-3 videoDescription"
+                onClick={() => setShowDescription(!showDescription)}
+              >
+                {" "}
+                <p>
+                  {showDescription
+                    ? videoDescription
+                    : `${videoDescription.substring(0, 200)}...`}
+                </p>{" "}
+                {!showDescription && <p>Show more</p>}
+              </div>
             </div>
           </Col>
         </Row>
@@ -128,15 +181,6 @@ function VideoPage() {
           <Col>
             <div className="mt-3">
               <Comments videoId={videoId} commenter={commenter} />
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div className="mt-3">
-              <Button variant="primary" disabled={liked} onClick={addLike}>
-                {liked ? `Liked (${likes})` : `Like (${likes})`}
-              </Button>
             </div>
           </Col>
         </Row>
