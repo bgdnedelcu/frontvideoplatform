@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import UserService from "../service/UserService";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
+import UserService from "../service/UserService";
 import IncompletsFieldsError from "./IncompletsFieldsError";
 
 const Register = () => {

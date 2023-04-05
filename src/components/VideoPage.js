@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import axios from "axios";
 import Header from "./Header";
-import JwtService from "../service/jwtservice";
 import AddComment from "./AddComment";
 import Comments from "./Comments";
-import axios from "axios";
+import JwtService from "../service/jwtservice";
 
 function VideoPage() {
   const [videoUrl, setVideoUrl] = useState("");
