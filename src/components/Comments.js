@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import JwtService from "../service/jwtservice";
 
-function Comments({ videoId }) {
+function Comments({ videoId, commentsUpdated }) {
   const [comments, setComments] = useState([]);
 
   const loadComments = () => {
@@ -26,11 +26,7 @@ function Comments({ videoId }) {
 
   useEffect(() => {
     loadComments();
-  }, []);
-
-  useEffect(() => {
-    console.log("Se rendereaza");
-  }, [comments]);
+  }, [commentsUpdated]);
 
   return (
     <div>

@@ -15,10 +15,8 @@ function VideoPage() {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [commenter, setCommenter] = useState("");
-  const [showDescription, setShowDescription] = useState(false); // new state variable
-  const [content, setContent] = useState("");
-
-  // rest of the code
+  const [showDescription, setShowDescription] = useState(false);
+  const [commentsUpdated, setCommentsUpdated] = useState(0);
 
   const createVideoUrl = () => {
     setVideoUrl(
@@ -111,32 +109,8 @@ function VideoPage() {
       });
   };
 
-  const saveComment = (event) => {
-    event.preventDefault();
-    const config = {
-      headers: {
-        Authorization: JwtService.addAuthorization(),
-        "Content-Type": "text/plain",
-      },
-    };
-
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/addComment?idVideo=${videoId}`,
-        content,
-        config
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setContent("");
-  };
-
-  const changeContent = (event) => {
-    setContent(event.target.value);
+  const handleCommentAdded = () => {
+    setCommentsUpdated(commentsUpdated + 1);
   };
 
   useEffect(() => {
@@ -144,8 +118,6 @@ function VideoPage() {
     loadVideoDetails();
     loadCommenter();
   }, []);
-
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -209,35 +181,21 @@ function VideoPage() {
           <Col>
             <div className="mt-3">
               <h5>Comment as {commenter}</h5>
-              <form onSubmit={saveComment} className="mb-3">
-                {" "}
-                //from here
-                <div className="row">
-                  <div className="col-md-8">
-                    <div className="form-floating">
-                      <textarea
-                        className="form-control"
-                        placeholder="Adaugă un comentariu"
-                        id="commentContent"
-                        value={content}
-                        onChange={changeContent}
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div className="col-md-4 d-flex align-items-end justify-content-start">
-                    <button className="btn btn-primary" type="submit">
-                      Add Comment
-                    </button>
-                  </div>
-                </div>
-              </form>
+              <AddComment
+                idVideo={videoId}
+                onCommentAdded={handleCommentAdded}
+              />
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
             <div className="mt-3">
-              <Comments videoId={videoId} commenter={commenter} />
+              <Comments
+                videoId={videoId}
+                commenter={commenter}
+                commentsUpdated={commentsUpdated}
+              />
             </div>
           </Col>
         </Row>
