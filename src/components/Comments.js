@@ -5,28 +5,27 @@ import JwtService from "../service/jwtservice";
 function Comments({ videoId, commentsUpdated }) {
   const [comments, setComments] = useState([]);
 
-  const loadComments = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
-
-    axios
-      .get(
-        `http://localhost:8081/videoplatform/api/video/commentsByVideoId/${videoId}`,
-        config
-      )
-      .then((response) => {
-        setComments(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
+    const loadComments = () => {
+      const config = {
+        headers: { Authorization: JwtService.addAuthorization() },
+      };
+
+      axios
+        .get(
+          `http://localhost:8081/videoplatform/api/video/commentsByVideoId/${videoId}`,
+          config
+        )
+        .then((response) => {
+          setComments(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
     loadComments();
-  }, [commentsUpdated]);
+  }, [commentsUpdated, videoId]);
 
   return (
     <div>

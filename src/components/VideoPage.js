@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "./Header";
 import AddComment from "./AddComment";
 import Comments from "./Comments";
+import NotFound from "./NotFound";
 import JwtService from "../service/jwtservice";
 
 function VideoPage() {
+  const loc = useLocation();
+  const videoId = loc.state.videoId;
+
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoId, setVideoId] = useState(21);
+  // const [videoId, setVideoId] = useState(10);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoChannel, setVideoChannel] = useState("");
@@ -126,11 +131,15 @@ function VideoPage() {
         <Row>
           <Col>
             <div className="embed-responsive embed-responsive-16by9">
-              <video className="video embed-responsive-item" controls>
+              <video
+                className="video embed-responsive-item"
+                controls
+                autoPlay={true}
+              >
                 {videoUrl ? (
                   <source src={videoUrl} type="video/mp4" />
                 ) : (
-                  <p>Cannot load video right now</p>
+                  <NotFound />
                 )}
               </video>
             </div>
@@ -167,12 +176,27 @@ function VideoPage() {
                 onClick={() => setShowDescription(!showDescription)}
               >
                 {" "}
-                <p>
-                  {showDescription
-                    ? videoDescription
-                    : `${videoDescription.substring(0, 200)}...`}
-                </p>{" "}
-                {!showDescription && <p>Show more</p>}
+                {videoDescription.length > 250 ? (
+                  <>
+                    <p>
+                      {showDescription
+                        ? videoDescription
+                        : `${videoDescription.substring(0, 250)}...`}
+                    </p>
+                    {!showDescription && (
+                      <Button
+                        className="showMore"
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => setShowDescription(true)}
+                      >
+                        Show more
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <p>{videoDescription}</p>
+                )}
               </div>
             </div>
           </Col>

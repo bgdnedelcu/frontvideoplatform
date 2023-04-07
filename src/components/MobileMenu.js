@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +9,12 @@ import JwtService from "../service/jwtservice";
 const MobileMenu = () => {
   const [show, setShow] = React.useState(false);
   const user = JwtService.getUser();
+  const navigate = useNavigate();
+
+  const goToUpload = () => {
+    navigate("/upload");
+    window.location.reload();
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -24,7 +31,12 @@ const MobileMenu = () => {
         </Modal.Header>
         <Modal.Body>
           <h6>{user}</h6>
-          <Logout />
+          <div className="modal-content">
+            <Button variant="success" onClick={goToUpload}>
+              Upload new video
+            </Button>
+            <Logout />
+          </div>
         </Modal.Body>
       </Modal>
     </>

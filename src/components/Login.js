@@ -53,7 +53,7 @@ const Login = () => {
 
         const token = response.headers.get("Access-Token");
         localStorage.setItem("token", JSON.stringify(token));
-        navigate("/home");
+        navigate("/search");
         window.location.reload();
       })
       .catch((error) => {
