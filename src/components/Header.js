@@ -10,8 +10,9 @@ const Header = () => {
   const navigate = useNavigate();
 
   const submitSearch = (e) => {
-    const videoPath = "/search/".concat(searchText);
-    navigate(videoPath, { state: { searchText } });
+    const videoPath = `/search/${searchText}`;
+    console.log(videoPath);
+    navigate(videoPath);
   };
 
   const goToHome = () => {

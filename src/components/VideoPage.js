@@ -13,7 +13,6 @@ function VideoPage() {
   const videoId = loc.state.videoId;
 
   const [videoUrl, setVideoUrl] = useState("");
-  // const [videoId, setVideoId] = useState(10);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [videoChannel, setVideoChannel] = useState("");

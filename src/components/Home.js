@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import { useState, useEffect } from "react";
 import JwtService from "../service/jwtservice";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -22,8 +22,7 @@ function Home() {
 
   const navigate = useNavigate();
 
-  const loc = useLocation();
-  const search = loc.state;
+  const { searchText } = useParams();
 
   useEffect(() => {
     const config = {
@@ -35,18 +34,20 @@ function Home() {
     };
 
     let baseUrl = "http://localhost:8081/videoplatform/api/video/";
-    if (search == null) {
+    if (searchText == null) {
       baseUrl = baseUrl.concat("home");
     } else {
-      baseUrl = baseUrl.concat("search/").concat(search.searchText);
+      baseUrl = baseUrl.concat("search/").concat(searchText);
+      console.log(baseUrl);
     }
 
     axios
-      .get(baseUrl, config) 
+      .get(baseUrl, config)
       .then((response) => {
         console.log(response.data);
         const newVideos = response.data;
         setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+        console.log(searchText);
       })
       .catch((err) => {
         console.error(err);
