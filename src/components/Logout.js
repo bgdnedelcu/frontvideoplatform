@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 
-
 const Logout = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();

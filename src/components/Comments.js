@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import JwtService from "../service/jwtservice";
 
-function Comments({ videoId, commentsUpdated }) {
+const Comments = ({ videoId, commentsUpdated }) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {

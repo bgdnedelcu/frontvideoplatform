@@ -8,7 +8,7 @@ import Comments from "./Comments";
 import NotFound from "./NotFound";
 import JwtService from "../service/jwtservice";
 
-function VideoPage() {
+const VideoPage = () => {
   const loc = useLocation();
   const videoId = loc.state.videoId;
 
@@ -37,17 +37,17 @@ function VideoPage() {
         `http://localhost:8081/videoplatform/api/video/getVideoDetails/${videoId}`,
         config
       )
-
       .then((response) => {
         setVideoTitle(response.data.videoTitle);
         setVideoDescription(response.data.description);
         setVideoChannel(response.data.videoChannelName);
         setLikes(response.data.likes);
         setLiked(response.data.liked);
-        console.log(response.data);
+        console.log("Video details loaded successfully: {}", response.data);
       })
       .catch((error) => {
         console.error(error);
+        console.error("Error loading video details: {}", error.message);
       });
   };
 
@@ -225,6 +225,6 @@ function VideoPage() {
       </Container>
     </>
   );
-}
+};
 
 export default VideoPage;

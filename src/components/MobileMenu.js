@@ -16,6 +16,11 @@ const MobileMenu = () => {
     window.location.reload();
   };
 
+  const goToPlaylists = () => {
+    navigate("/playlists");
+    window.location.reload();
+  };
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -34,6 +39,9 @@ const MobileMenu = () => {
           <div className="modal-content">
             <Button variant="success" onClick={goToUpload}>
               Upload new video
+            </Button>
+            <Button variant="secondary" onClick={goToPlaylists}>
+              PlayLists
             </Button>
             <Logout />
           </div>
