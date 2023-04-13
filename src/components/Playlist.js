@@ -3,9 +3,13 @@ import Header from "./Header";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
+  const [numPlaylists, setNumPlaylists] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getPlayListSet = () => {
@@ -19,6 +23,7 @@ const Playlist = () => {
         )
         .then((response) => {
           setPlayListSet(response.data);
+          setNumPlaylists(response.data.length);
           console.log(response.data);
         })
         .catch((error) => {
@@ -27,9 +32,10 @@ const Playlist = () => {
     };
 
     getPlayListSet();
-  }, []);
+  }, [numPlaylists]);
 
-  const deletePlaylist = (idPlayList) => {
+  const deletePlaylist = (e) => {
+    const idPlayList = e.target.value;
     const config = {
       headers: { Authorization: JwtService.addAuthorization() },
       "Content-Type": "application/json",
@@ -58,6 +64,7 @@ const Playlist = () => {
           )
           .then(() => {
             console.log("The playlist has been deleted");
+            setNumPlaylists((prevNumPlaylists) => prevNumPlaylists - 1);
           })
           .catch((error) => {
             console.error(error);
@@ -66,6 +73,11 @@ const Playlist = () => {
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  const goToVideos = (playlistId, playlistTitle) => {
+    const videoPath = "/playlist/".concat(playlistId);
+    navigate(videoPath, { state: { playlistId, playlistTitle } });
   };
 
   return (
@@ -100,12 +112,12 @@ const Playlist = () => {
                 </tr>
 
                 {playlists.map((playlist, key) => (
-                  <tr key={key}>
+                  <tr key={playlist.id}>
                     <td>{playlist.title}</td>
                     <td>
                       <Button
                         className="buttonFromPlaylist"
-                        value={playlist.id}
+                        onClick={() => goToVideos(playlist.id, playlist.title)}
                       >
                         Explore Videos from playlist
                       </Button>
@@ -119,7 +131,7 @@ const Playlist = () => {
                         className="buttonFromPlaylist"
                         value={playlist.id}
                         variant="danger"
-                        onClick={() => deletePlaylist(playlist.id)}
+                        onClick={deletePlaylist}
                       >
                         Delete Playlist
                       </Button>

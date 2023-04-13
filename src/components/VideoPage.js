@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "./Header";
 import AddComment from "./AddComment";
@@ -9,8 +9,10 @@ import NotFound from "./NotFound";
 import JwtService from "../service/jwtservice";
 
 const VideoPage = () => {
-  const loc = useLocation();
-  const videoId = loc.state.videoId;
+  // const loc = useLocation();
+  // const videoId = loc.state.videoId;
+
+  const { videoId } = useParams();
 
   const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
@@ -154,21 +156,23 @@ const VideoPage = () => {
                 <p>
                   From <a href="#">{videoChannel}</a>
                 </p>
-                <div className="like-button">
-                  {liked ? (
-                    <Button
-                      variant="primary"
-                      className="liked"
-                      onClick={undoLike}
-                    >
-                      Liked ({likes})
-                    </Button>
-                  ) : (
-                    <Button variant="primary" onClick={addLike}>
-                      Like ({likes})
-                    </Button>
-                  )}
-                </div>
+                {JwtService.checkJwt() && (
+                  <div className="like-button">
+                    {liked ? (
+                      <Button
+                        variant="primary"
+                        className="liked"
+                        onClick={undoLike}
+                      >
+                        Liked ({likes})
+                      </Button>
+                    ) : (
+                      <Button variant="primary" onClick={addLike}>
+                        Like ({likes})
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
               <div
                 className="mb-3 videoDescription"
@@ -202,13 +206,15 @@ const VideoPage = () => {
         </Row>
         <Row>
           <Col>
-            <div className="mt-3">
-              <h5>Comment as {commenter}</h5>
-              <AddComment
-                idVideo={videoId}
-                onCommentAdded={handleCommentAdded}
-              />
-            </div>
+            {JwtService.checkJwt() && (
+              <div className="mt-3">
+                <h5>Comment as {commenter}</h5>
+                <AddComment
+                  idVideo={videoId}
+                  onCommentAdded={handleCommentAdded}
+                />
+              </div>
+            )}
           </Col>
         </Row>
         <Row>

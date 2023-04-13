@@ -205,18 +205,6 @@ const Home = () => {
             </Table>
           </Col>
         </Row>
-
-        {/* <Row className="justify-content-md-center">
-          <Col sm={4}>
-            {succesMessage && (
-              <>
-                <Alert variant={"success"} className="customPlayer">
-                  Successfully added to the playlist!
-                </Alert>
-              </>
-            )}
-          </Col>
-        </Row> */}
       </Container>
     </>
   );

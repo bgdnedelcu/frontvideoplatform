@@ -8,6 +8,7 @@ import UploadVideo from "./components/UploadVideo";
 import Playlist from "./components/Playlist";
 import ProtectedRoute from "./components/ProtectedRoute";
 import JwtService from "./service/jwtservice";
+import VideosFromPlayList from "./components/VideosFromPlaylist";
 
 function App() {
   const user = JwtService.getUser();
@@ -18,7 +19,6 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
           <Route
             path="/"
             element={
@@ -27,7 +27,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/home"
             element={
@@ -36,7 +35,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/upload"
             element={
@@ -45,7 +43,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/playlists"
             element={
@@ -54,6 +51,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/playlist"
+            element={
+              <ProtectedRoute user={user}>
+                <VideosFromPlayList />
+              </ProtectedRoute>
+            }
+          >
+            <Route path=":playlistId" element={<VideosFromPlayList />} />
+          </Route>
 
           <Route
             path="/search"
@@ -66,7 +73,8 @@ function App() {
             <Route path="" element={<Home />} />
             <Route path=":searchText" element={<Home />} />
           </Route>
-
+          {/*  De modificat
+          
           <Route
             path="/play"
             element={
@@ -75,6 +83,10 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route path=":videoId" element={<VideoPage />} />
+          </Route> */}
+
+          <Route path="/play" element={<VideoPage />}>
             <Route path=":videoId" element={<VideoPage />} />
           </Route>
         </Routes>

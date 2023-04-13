@@ -75,7 +75,8 @@ body {
 /* HomeComponent */
 
 .videosTable,
-.playlistTable {
+.playlistTable,
+.videosFromPlaylistTable {
   margin: 100px auto;
   background: black;
   opacity: 0.9;
