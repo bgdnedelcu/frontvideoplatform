@@ -4,10 +4,16 @@ import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import CreatePlaylist from "./CreatePlaylist";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
   const [numPlaylists, setNumPlaylists] = useState(0);
+
+  const [show, setShow] = React.useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const navigate = useNavigate();
 
@@ -83,6 +89,7 @@ const Playlist = () => {
   return (
     <>
       <Header />
+      <CreatePlaylist show={show} handleClose={handleClose} />
 
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
@@ -105,7 +112,7 @@ const Playlist = () => {
                   <td>Add Playlist</td>
                   <td>
                     Press the right button to create a new playlist{" "}
-                    <Button style={{ marginLeft: "30px" }}>
+                    <Button style={{ marginLeft: "30px" }} onClick={handleShow}>
                       Create new Playlist
                     </Button>
                   </td>

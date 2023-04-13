@@ -81,7 +81,11 @@ const VideosFromPlayList = () => {
                 width: "100%",
               }}
             >
-              Videos from {playlistTitle} playlist
+              Videos from{" "}
+              <span className="playlistTitle" style={{ color: "blue" }}>
+                {playlistTitle}{" "}
+              </span>{" "}
+              playlist
             </h2>
           </Col>
         </Row>

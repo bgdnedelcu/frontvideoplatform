@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "./Header";
 import AddComment from "./AddComment";
@@ -12,6 +12,7 @@ const VideoPage = () => {
   // const loc = useLocation();
   // const videoId = loc.state.videoId;
 
+  const navigate = useNavigate();
   const { videoId } = useParams();
 
   const [videoUrl, setVideoUrl] = useState("");
@@ -115,6 +116,13 @@ const VideoPage = () => {
       });
   };
 
+  const goToChannel = (e) => {
+    const channelVideo = e.target.value;
+    const channelPath = "/channel/".concat(channelVideo);
+    console.log(channelPath);
+    navigate(channelPath, { state: { channelVideo } });
+  };
+
   const handleCommentAdded = () => {
     setCommentsUpdated(commentsUpdated + 1);
   };
@@ -154,25 +162,37 @@ const VideoPage = () => {
               </div>
               <div className="mb-3 videoChannel">
                 <p>
-                  From <a href="#">{videoChannel}</a>
+                  <Link
+                    to={`/channel/${videoChannel}`}
+                    state={{ channelVideo: videoChannel }}
+                  >
+                    {videoChannel}
+                  </Link>
+                  {/* <Button
+                    variant="primary"
+                    value={videoChannel}
+                    onClick={goToChannel}
+                  >
+                    {videoChannel}
+                  </Button> */}
                 </p>
-                {JwtService.checkJwt() && (
-                  <div className="like-button">
-                    {liked ? (
-                      <Button
-                        variant="primary"
-                        className="liked"
-                        onClick={undoLike}
-                      >
-                        Liked ({likes})
-                      </Button>
-                    ) : (
-                      <Button variant="primary" onClick={addLike}>
-                        Like ({likes})
-                      </Button>
-                    )}
-                  </div>
-                )}
+                {/* {JwtService.checkJwt() && ( */}
+                <div className="like-button">
+                  {liked ? (
+                    <Button
+                      variant="primary"
+                      className="liked"
+                      onClick={undoLike}
+                    >
+                      Liked ({likes})
+                    </Button>
+                  ) : (
+                    <Button variant="primary" onClick={addLike}>
+                      Like ({likes})
+                    </Button>
+                  )}
+                </div>
+                {/* )} */}
               </div>
               <div
                 className="mb-3 videoDescription"
@@ -206,15 +226,15 @@ const VideoPage = () => {
         </Row>
         <Row>
           <Col>
-            {JwtService.checkJwt() && (
-              <div className="mt-3">
-                <h5>Comment as {commenter}</h5>
-                <AddComment
-                  idVideo={videoId}
-                  onCommentAdded={handleCommentAdded}
-                />
-              </div>
-            )}
+            {/* {JwtService.checkJwt() && ( */}
+            <div className="mt-3">
+              <h5>Comment as {commenter}</h5>
+              <AddComment
+                idVideo={videoId}
+                onCommentAdded={handleCommentAdded}
+              />
+            </div>
+            {/* )} */}
           </Col>
         </Row>
         <Row>

@@ -9,6 +9,7 @@ import Playlist from "./components/Playlist";
 import ProtectedRoute from "./components/ProtectedRoute";
 import JwtService from "./service/jwtservice";
 import VideosFromPlayList from "./components/VideosFromPlaylist";
+import Channel from "./components/Channel";
 
 function App() {
   const user = JwtService.getUser();
@@ -35,6 +36,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+
           <Route
             path="/upload"
             element={
@@ -73,6 +77,15 @@ function App() {
             <Route path="" element={<Home />} />
             <Route path=":searchText" element={<Home />} />
           </Route>
+
+          <Route
+            path="/channel/:channelName"
+            element={
+              <ProtectedRoute user={user}>
+                <Channel />
+              </ProtectedRoute>
+            }
+          />
           {/*  De modificat
           
           <Route
