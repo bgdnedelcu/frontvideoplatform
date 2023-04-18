@@ -1,28 +1,43 @@
 import React from "react";
+import axios from "axios";
+import JwtService from "../service/jwtservice";
+import { Button, Form, Modal } from "react-bootstrap";
 
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Form,
-  FormControl, 
-  Table,
-  Modal,
-} from "react-bootstrap";
-
-const CreatePlaylist = ({ handleClose, show }) => {
-  var titleInput;
+const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
+  let titleInput;
 
   const setTitle = (text) => {
     titleInput = text;
   };
 
+  const createPlaylist = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+      "Content-Type": "application/json",
+    };
+
+    const body = {
+      title: titleInput,
+    };
+
+    axios
+      .post(
+        "http://localhost:8080/videoplatform/api/account/createNewPlayList",
+        body,
+        config
+      )
+      .then(() => {
+        newPlaylistAdded();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add playlist</Modal.Title>
+        <Modal.Title>Create Playlist</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -34,12 +49,14 @@ const CreatePlaylist = ({ handleClose, show }) => {
               autoFocus
             />
           </Form.Group>
-          <Button type="submit" variant="primary">
-            Add
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+          <div className="createPlayButtons">
+            <Button type="submit" variant="primary" onClick={createPlaylist}>
+              Add
+            </Button>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

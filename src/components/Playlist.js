@@ -9,6 +9,7 @@ import CreatePlaylist from "./CreatePlaylist";
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
   const [numPlaylists, setNumPlaylists] = useState(0);
+  const [newPlaylistHasBeenCreated, setNewPlaylistHasBeenCreated] = useState(0);
 
   const [show, setShow] = React.useState(false);
 
@@ -38,7 +39,13 @@ const Playlist = () => {
     };
 
     getPlayListSet();
-  }, [numPlaylists]);
+  }, [numPlaylists, newPlaylistHasBeenCreated]);
+
+  const newPlaylistAdded = () => {
+    setNewPlaylistHasBeenCreated(
+      (prevNewPlaylistHasBeenCreated) => prevNewPlaylistHasBeenCreated + 1
+    );
+  };
 
   const deletePlaylist = (e) => {
     const idPlayList = e.target.value;
@@ -89,7 +96,11 @@ const Playlist = () => {
   return (
     <>
       <Header />
-      <CreatePlaylist show={show} handleClose={handleClose} />
+      <CreatePlaylist
+        show={show}
+        handleClose={handleClose}
+        newPlaylistAdded={newPlaylistAdded}
+      />
 
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
