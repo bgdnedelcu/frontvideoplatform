@@ -16,11 +16,6 @@ import NotFound from "./NotFound";
 import JwtService from "../service/jwtservice";
 
 const VideoPage = () => {
-  // const loc = useLocation();
-  // const videoId = loc.state.videoId;
-
-  const { videoId } = useParams();
-
   const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
@@ -31,6 +26,55 @@ const VideoPage = () => {
   const [showDescription, setShowDescription] = useState(false);
   const [commentsUpdated, setCommentsUpdated] = useState(0);
   const [playListSet, setPlayListSet] = useState([]);
+
+  const { videoId } = useParams();
+
+  const addLike = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .post(
+        `http://localhost:8081/videoplatform/api/video/like/${videoId}`,
+        {},
+        config
+      )
+      .then(() => {
+        if (!liked) {
+          setLikes(likes + 1);
+          setLiked(true);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const undoLike = () => {
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .post(
+        `http://localhost:8081/videoplatform/api/video/deleteLike/${videoId}`,
+        {},
+        config
+      )
+      .then(() => {
+        if (liked) {
+          setLikes(likes - 1);
+          setLiked(false);
+          console.log("CALL");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleCommentAdded = () => {
+    setCommentsUpdated(commentsUpdated + 1);
+  };
 
   useEffect(() => {
     const createVideoUrl = () => {
@@ -131,53 +175,6 @@ const VideoPage = () => {
       });
   };
 
-  const addLike = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/like/${videoId}`,
-        {},
-        config
-      )
-      .then(() => {
-        if (!liked) {
-          setLikes(likes + 1);
-          setLiked(true);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const undoLike = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/deleteLike/${videoId}`,
-        {},
-        config
-      )
-      .then(() => {
-        if (liked) {
-          setLikes(likes - 1);
-          setLiked(false);
-          console.log("CALL");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleCommentAdded = () => {
-    setCommentsUpdated(commentsUpdated + 1);
-  };
-
   return (
     <>
       <Header />
@@ -210,7 +207,6 @@ const VideoPage = () => {
                   <Link
                     to={`/channel/${videoChannel}`}
                     state={{ channelVideo: videoChannel }}
-                    className="linkToChannel"
                   >
                     {videoChannel}
                   </Link>

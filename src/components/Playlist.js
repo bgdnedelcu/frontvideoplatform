@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Modal } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +10,15 @@ const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
   const [numPlaylists, setNumPlaylists] = useState(0);
   const [newPlaylistHasBeenCreated, setNewPlaylistHasBeenCreated] = useState(0);
+  const [playlistToDeleteId, setPlaylistToDeleteId] = useState(null);
+  const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const [show, setShow] = React.useState(false);
+  const handleCloseDeleteModal = () => setShowDeleteModal(false);
+  const handleShowDeleteModal = () => setShowDeleteModal(true);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowCreatePlaylist(false);
+  const handleShow = () => setShowCreatePlaylist(true);
 
   const navigate = useNavigate();
 
@@ -47,8 +51,8 @@ const Playlist = () => {
     );
   };
 
-  const deletePlaylist = (e) => {
-    const idPlayList = e.target.value;
+  const deletePlaylist = (playlistToDeleteId) => {
+    const idPlayList = playlistToDeleteId;
     const config = {
       headers: { Authorization: JwtService.addAuthorization() },
       "Content-Type": "application/json",
@@ -78,6 +82,8 @@ const Playlist = () => {
           .then(() => {
             console.log("The playlist has been deleted");
             setNumPlaylists((prevNumPlaylists) => prevNumPlaylists - 1);
+            setPlaylistToDeleteId(null);
+            handleCloseDeleteModal();
           })
           .catch((error) => {
             console.error(error);
@@ -97,7 +103,7 @@ const Playlist = () => {
     <>
       <Header />
       <CreatePlaylist
-        show={show}
+        show={showCreatePlaylist}
         handleClose={handleClose}
         newPlaylistAdded={newPlaylistAdded}
       />
@@ -143,13 +149,16 @@ const Playlist = () => {
                         className="buttonFromPlaylist"
                         value={playlist.id}
                       >
-                        Edit Playlist
+                        Edit Playlist Title
                       </Button>
                       <Button
                         className="buttonFromPlaylist"
                         value={playlist.id}
                         variant="danger"
-                        onClick={deletePlaylist}
+                        onClick={() => {
+                          handleShowDeleteModal();
+                          setPlaylistToDeleteId(playlist.id);
+                        }}
                       >
                         Delete Playlist
                       </Button>
@@ -161,6 +170,27 @@ const Playlist = () => {
           </Col>
         </Row>
       </Container>
+
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete the playlist?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              console.log(playlistToDeleteId);
+              deletePlaylist(playlistToDeleteId);
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

@@ -51,7 +51,7 @@ const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
           </Form.Group>
           <div className="createPlayButtons">
             <Button type="submit" variant="primary" onClick={createPlaylist}>
-              Add
+              Save
             </Button>
             <Button variant="secondary" onClick={handleClose}>
               Close
