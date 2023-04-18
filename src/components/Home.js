@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import { useState, useEffect } from "react";
 import JwtService from "../service/jwtservice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
 
@@ -167,7 +167,15 @@ const Home = () => {
                   return (
                     <tr key={video.videoId}>
                       <td>{video.videoTitle}</td>
-                      <td>{video.videoChannel}</td>
+                      <td>
+                        <Link
+                          to={`/channel/${video.videoChannel}`}
+                          state={{ channelVideo: video.videoChannel }}
+                          className="linkToChannel"
+                        >
+                          {video.videoChannel}
+                        </Link>
+                      </td>
                       <td>
                         <Button
                           style={{ marginRight: "10px" }}

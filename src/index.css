@@ -50,9 +50,9 @@ body {
 }
 
 
-.like-button {
-  padding-right: 100px;
-}
+/* .like-button {
+  padding-right: 50px;
+} */
 
 .videoDescription {
   height: auto;
@@ -126,6 +126,14 @@ body {
 }
 
 .deleteCommentButton {
-  align-items: center;
   width: 200px;
+}
+
+.linkToChannel {
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.linkToChannel:hover {
+  color: aliceblue
 }

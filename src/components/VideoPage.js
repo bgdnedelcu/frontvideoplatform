@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Dropdown,
+  ButtonGroup,
+} from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "./Header";
 import AddComment from "./AddComment";
@@ -12,7 +19,6 @@ const VideoPage = () => {
   // const loc = useLocation();
   // const videoId = loc.state.videoId;
 
-  const navigate = useNavigate();
   const { videoId } = useParams();
 
   const [videoUrl, setVideoUrl] = useState("");
@@ -24,52 +30,104 @@ const VideoPage = () => {
   const [commenter, setCommenter] = useState("");
   const [showDescription, setShowDescription] = useState(false);
   const [commentsUpdated, setCommentsUpdated] = useState(0);
+  const [playListSet, setPlayListSet] = useState([]);
 
-  const createVideoUrl = () => {
-    setVideoUrl(
-      `${"http://localhost:8081/videoplatform/api/video/play"}/${videoId}`
-    );
-  };
-
-  const loadVideoDetails = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
+  useEffect(() => {
+    const createVideoUrl = () => {
+      setVideoUrl(
+        `${"http://localhost:8081/videoplatform/api/video/play"}/${videoId}`
+      );
     };
-    axios
-      .get(
-        `http://localhost:8081/videoplatform/api/video/getVideoDetails/${videoId}`,
-        config
-      )
-      .then((response) => {
-        setVideoTitle(response.data.videoTitle);
-        setVideoDescription(response.data.description);
-        setVideoChannel(response.data.videoChannelName);
-        setLikes(response.data.likes);
-        setLiked(response.data.liked);
-        console.log("Video details loaded successfully: {}", response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        console.error("Error loading video details: {}", error.message);
-      });
-  };
 
-  const loadCommenter = () => {
     const config = {
       headers: { Authorization: JwtService.addAuthorization() },
     };
 
+    const getPlayListSet = () => {
+      axios
+        .get(
+          `http://localhost:8080/videoplatform/api/account/playlistsByEmailFromToken`,
+          config
+        )
+        .then((response) => {
+          setPlayListSet(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    const loadVideoDetails = () => {
+      axios
+        .get(
+          `http://localhost:8081/videoplatform/api/video/getVideoDetails/${videoId}`,
+          config
+        )
+        .then((response) => {
+          setVideoTitle(response.data.videoTitle);
+          setVideoDescription(response.data.description);
+          setVideoChannel(response.data.videoChannelName);
+          setLikes(response.data.likes);
+          setLiked(response.data.liked);
+          console.log("Video details loaded successfully: {}", response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+          console.error("Error loading video details: {}", error.message);
+        });
+    };
+
+    const loadCommenter = () => {
+      axios
+        .get(
+          "http://localhost:8080/videoplatform/api/account/channelName",
+          config
+        )
+        .then((response) => {
+          console.log(response.data);
+          setCommenter(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    loadCommenter();
+    createVideoUrl();
+    loadVideoDetails();
+    getPlayListSet();
+  }, []);
+
+  const addToPlaylist = (e) => {
+    const load = e.target.dataset.id;
+    const params = load.split(" ");
+    const idPlaylistList = params[0];
+    const idVideo = params[1];
+
+    const config = {
+      headers: {
+        Authorization: JwtService.addAuthorization(),
+        "Content-Type": "application/json",
+      },
+    };
+
+    const body = {
+      idPlayList: idPlaylistList,
+      idVideo: idVideo,
+    };
+
     axios
-      .get(
-        "http://localhost:8080/videoplatform/api/account/channelName",
+      .post(
+        `http://localhost:8081/videoplatform/api/video/insertToPlaylist`,
+        body,
         config
       )
       .then((response) => {
         console.log(response.data);
-        setCommenter(response.data);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((err) => {
+        console.error(err);
       });
   };
 
@@ -116,22 +174,9 @@ const VideoPage = () => {
       });
   };
 
-  const goToChannel = (e) => {
-    const channelVideo = e.target.value;
-    const channelPath = "/channel/".concat(channelVideo);
-    console.log(channelPath);
-    navigate(channelPath, { state: { channelVideo } });
-  };
-
   const handleCommentAdded = () => {
     setCommentsUpdated(commentsUpdated + 1);
   };
-
-  useEffect(() => {
-    createVideoUrl();
-    loadVideoDetails();
-    loadCommenter();
-  }, []);
 
   return (
     <>
@@ -165,16 +210,10 @@ const VideoPage = () => {
                   <Link
                     to={`/channel/${videoChannel}`}
                     state={{ channelVideo: videoChannel }}
+                    className="linkToChannel"
                   >
                     {videoChannel}
                   </Link>
-                  {/* <Button
-                    variant="primary"
-                    value={videoChannel}
-                    onClick={goToChannel}
-                  >
-                    {videoChannel}
-                  </Button> */}
                 </p>
                 {/* {JwtService.checkJwt() && ( */}
                 <div className="like-button">
@@ -192,7 +231,24 @@ const VideoPage = () => {
                     </Button>
                   )}
                 </div>
-                {/* )} */}
+                <Dropdown as={ButtonGroup}>
+                  <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                    Add in playlist
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {playListSet.map((playList, key) => {
+                      return (
+                        <Dropdown.Item
+                          key={playList.id}
+                          data-id={playList.id + " " + videoId}
+                          onClick={addToPlaylist.bind(this)}
+                        >
+                          {playList.title}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
               <div
                 className="mb-3 videoDescription"

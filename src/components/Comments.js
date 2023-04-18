@@ -79,11 +79,11 @@ const Comments = ({ videoId, commentsUpdated }) => {
             <Link
               to={`/channel/${comment.channelName}`}
               state={{ channelVideo: comment.channelName }}
+              className="linkToChannel"
             >
               {comment.channelName}
             </Link>
           </div>
-          {/* <div className="card-header">{comment.channelName}</div> */}
           <div className="card-body">
             <p className="card-text">{comment.comment}</p>
           </div>
