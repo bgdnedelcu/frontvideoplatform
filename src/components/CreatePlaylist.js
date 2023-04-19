@@ -3,7 +3,7 @@ import axios from "axios";
 import JwtService from "../service/jwtservice";
 import { Button, Form, Modal } from "react-bootstrap";
 
-const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
+const CreatePlaylist = ({ handleClose, show, triggerRerender }) => {
   let titleInput;
 
   const setTitle = (text) => {
@@ -27,7 +27,7 @@ const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
         config
       )
       .then(() => {
-        newPlaylistAdded();
+        triggerRerender();
       })
       .catch((err) => {
         console.error(err);
@@ -51,7 +51,14 @@ const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
             />
           </Form.Group>
           <div className="createPlayButtons">
-            <Button type="submit" variant="primary" onClick={createPlaylist}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                createPlaylist();
+                handleClose();
+              }}
+            >
               Save
             </Button>
             <Button variant="secondary" onClick={handleClose}>

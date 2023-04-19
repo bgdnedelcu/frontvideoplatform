@@ -32,6 +32,12 @@ const Playlist = () => {
     console.log(actionRerender);
   };
 
+  const newPlaylistAdded = () => {
+    setNewPlaylistHasBeenCreated(
+      (prevNewPlaylistHasBeenCreated) => prevNewPlaylistHasBeenCreated + 1
+    );
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,12 +62,6 @@ const Playlist = () => {
 
     getPlayListSet();
   }, [numPlaylists, newPlaylistHasBeenCreated, actionRerender]);
-
-  const newPlaylistAdded = () => {
-    setNewPlaylistHasBeenCreated(
-      (prevNewPlaylistHasBeenCreated) => prevNewPlaylistHasBeenCreated + 1
-    );
-  };
 
   const deletePlaylist = (playlistToDeleteId) => {
     const idPlayList = playlistToDeleteId;
@@ -117,7 +117,7 @@ const Playlist = () => {
       <CreatePlaylist
         show={showCreatePlaylist}
         handleClose={handleCloseCreatePlaylist}
-        newPlaylistAdded={newPlaylistAdded}
+        triggerRerender={newPlaylistAdded}
       />
       <EditPlaylist
         show={showEditPlaylist}
