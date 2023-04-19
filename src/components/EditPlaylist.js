@@ -1,33 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import JwtService from "../service/jwtservice";
 import { Button, Form, Modal } from "react-bootstrap";
 
-const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
+const EditPlaylist = ({ handleClose, show, playlistId, triggerRerender }) => {
   let titleInput;
 
   const setTitle = (text) => {
     titleInput = text;
   };
 
-  const createPlaylist = () => {
+  const editPlaylistTitle = () => {
     const config = {
       headers: { Authorization: JwtService.addAuthorization() },
-      "Content-Type": "application/json",
     };
-
-    const body = {
-      title: titleInput,
-    };
+    const formData = new FormData();
+    formData.append("title", titleInput);
 
     axios
-      .post(
-        "http://localhost:8080/videoplatform/api/account/createNewPlayList",
-        body,
+      .put(
+        `http://localhost:8080/videoplatform/api/account/editPlaylistTitle/${playlistId}`,
+        formData,
         config
       )
       .then(() => {
-        newPlaylistAdded();
+        triggerRerender();
       })
       .catch((err) => {
         console.error(err);
@@ -37,21 +34,28 @@ const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Create Playlist</Modal.Title>
+        <Modal.Title>Edit playlist title</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Playlist title</Form.Label>
+            <Form.Label>Enter new playlist title</Form.Label>
             <Form.Control
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter playlist title"
+              placeholder="New title"
               type="text"
               autoFocus
             />
           </Form.Group>
           <div className="createPlayButtons">
-            <Button type="submit" variant="primary" onClick={createPlaylist}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                editPlaylistTitle();
+                handleClose();
+              }}
+            >
               Save
             </Button>
             <Button variant="secondary" onClick={handleClose}>
@@ -64,4 +68,4 @@ const CreatePlaylist = ({ handleClose, show, newPlaylistAdded }) => {
   );
 };
 
-export default CreatePlaylist;
+export default EditPlaylist;

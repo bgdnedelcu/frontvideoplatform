@@ -19,10 +19,6 @@ const checkJwt = () => {
   return false;
 };
 
-const isJwtSet = () => {
-  return JSON.parse(localStorage.getItem("token"));
-};
-
 const getRole = () => {
   const token = JSON.parse(localStorage.getItem("token"));
   if (token) {
@@ -52,7 +48,6 @@ const JwtService = {
   getRole,
   checkJwt,
   addAuthorization,
-  isJwtSet,
   getUser,
 };
 

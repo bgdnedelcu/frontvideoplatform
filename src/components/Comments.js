@@ -10,6 +10,7 @@ const Comments = ({ videoId, commentsUpdated }) => {
   const [commentDeleted, setCommentDeleted] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [commnetToDeleteId, setCommnetToDeleteId] = useState(null);
+  const [userRole, setUserRole] = useState(undefined);
 
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
   const handleShowDeleteModal = () => setShowDeleteModal(true);
@@ -55,6 +56,9 @@ const Comments = ({ videoId, commentsUpdated }) => {
     };
     loadComments();
     getUserId();
+
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
   }, [commentsUpdated, videoId, commentDeleted]);
 
   const deleteComment = (idComment) => {
@@ -95,7 +99,7 @@ const Comments = ({ videoId, commentsUpdated }) => {
             <div className="card-body">
               <p className="card-text">{comment.comment}</p>
             </div>
-            {comment.idUser === userId && (
+            {userRole === "admin" ? (
               <Button
                 variant="outline-danger"
                 className="deleteCommentButton"
@@ -104,8 +108,21 @@ const Comments = ({ videoId, commentsUpdated }) => {
                   setCommnetToDeleteId(comment.idComment);
                 }}
               >
-                Delete your comment
+                Delete comment
               </Button>
+            ) : (
+              comment.idUser === userId && (
+                <Button
+                  variant="outline-danger"
+                  className="deleteCommentButton"
+                  onClick={() => {
+                    handleShowDeleteModal();
+                    setCommnetToDeleteId(comment.idComment);
+                  }}
+                >
+                  Delete your comment
+                </Button>
+              )
             )}
           </div>
         ))}

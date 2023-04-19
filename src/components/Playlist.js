@@ -5,6 +5,7 @@ import JwtService from "../service/jwtservice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CreatePlaylist from "./CreatePlaylist";
+import EditPlaylist from "./EditPlaylist";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
@@ -13,12 +14,23 @@ const Playlist = () => {
   const [playlistToDeleteId, setPlaylistToDeleteId] = useState(null);
   const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditPlaylist, setShowEditPlaylist] = useState(false);
+  const [playlistIdToEdit, setPlaylistIdToEdit] = useState(null);
+  const [actionRerender, setActionRerender] = useState(0);
 
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
   const handleShowDeleteModal = () => setShowDeleteModal(true);
 
-  const handleClose = () => setShowCreatePlaylist(false);
-  const handleShow = () => setShowCreatePlaylist(true);
+  const handleCloseCreatePlaylist = () => setShowCreatePlaylist(false);
+  const handleShowCreatePlaylist = () => setShowCreatePlaylist(true);
+
+  const handleCloseEditPlaylist = () => setShowEditPlaylist(false);
+  const handleShowEditPlaylist = () => setShowEditPlaylist(true);
+
+  const triggerRerenderPlaylists = () => {
+    setActionRerender((prevActionRerender) => prevActionRerender + 1);
+    console.log(actionRerender);
+  };
 
   const navigate = useNavigate();
 
@@ -43,7 +55,7 @@ const Playlist = () => {
     };
 
     getPlayListSet();
-  }, [numPlaylists, newPlaylistHasBeenCreated]);
+  }, [numPlaylists, newPlaylistHasBeenCreated, actionRerender]);
 
   const newPlaylistAdded = () => {
     setNewPlaylistHasBeenCreated(
@@ -104,14 +116,19 @@ const Playlist = () => {
       <Header />
       <CreatePlaylist
         show={showCreatePlaylist}
-        handleClose={handleClose}
+        handleClose={handleCloseCreatePlaylist}
         newPlaylistAdded={newPlaylistAdded}
       />
-
+      <EditPlaylist
+        show={showEditPlaylist}
+        handleClose={handleCloseEditPlaylist}
+        playlistId={playlistIdToEdit}
+        triggerRerender={triggerRerenderPlaylists}
+      />
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
           <Col sm={4}>
-            <h1>Playlists</h1>
+            <h1>Your Playlists</h1>
           </Col>
         </Row>
 
@@ -129,7 +146,10 @@ const Playlist = () => {
                   <td>Add Playlist</td>
                   <td>
                     Press the right button to create a new playlist{" "}
-                    <Button style={{ marginLeft: "30px" }} onClick={handleShow}>
+                    <Button
+                      style={{ marginLeft: "30px" }}
+                      onClick={handleShowCreatePlaylist}
+                    >
                       Create new Playlist
                     </Button>
                   </td>
@@ -148,6 +168,10 @@ const Playlist = () => {
                       <Button
                         className="buttonFromPlaylist"
                         value={playlist.id}
+                        onClick={() => {
+                          handleShowEditPlaylist();
+                          setPlaylistIdToEdit(playlist.id);
+                        }}
                       >
                         Edit Playlist Title
                       </Button>

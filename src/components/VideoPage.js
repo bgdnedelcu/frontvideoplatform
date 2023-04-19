@@ -26,6 +26,7 @@ const VideoPage = () => {
   const [showDescription, setShowDescription] = useState(false);
   const [commentsUpdated, setCommentsUpdated] = useState(0);
   const [playListSet, setPlayListSet] = useState([]);
+  const [userRole, setUserRole] = useState(undefined);
 
   const { videoId } = useParams();
 
@@ -141,6 +142,9 @@ const VideoPage = () => {
     createVideoUrl();
     loadVideoDetails();
     getPlayListSet();
+
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
   }, []);
 
   const addToPlaylist = (e) => {
@@ -202,7 +206,7 @@ const VideoPage = () => {
               <div className="mb-3 videoTitle">
                 <h3>{videoTitle}</h3>
               </div>
-              <div className="mb-3 videoChannel">
+              <div className="videoChannel linkToChannel mb-3">
                 <p>
                   <Link
                     to={`/channel/${videoChannel}`}
