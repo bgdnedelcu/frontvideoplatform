@@ -10,13 +10,14 @@ import EditPlaylist from "./EditPlaylist";
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
   const [numPlaylists, setNumPlaylists] = useState(0);
-  const [newPlaylistHasBeenCreated, setNewPlaylistHasBeenCreated] = useState(0);
   const [playlistToDeleteId, setPlaylistToDeleteId] = useState(null);
   const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditPlaylist, setShowEditPlaylist] = useState(false);
   const [playlistIdToEdit, setPlaylistIdToEdit] = useState(null);
   const [actionRerender, setActionRerender] = useState(0);
+
+  const navigate = useNavigate();
 
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
   const handleShowDeleteModal = () => setShowDeleteModal(true);
@@ -31,14 +32,6 @@ const Playlist = () => {
     setActionRerender((prevActionRerender) => prevActionRerender + 1);
     console.log(actionRerender);
   };
-
-  const newPlaylistAdded = () => {
-    setNewPlaylistHasBeenCreated(
-      (prevNewPlaylistHasBeenCreated) => prevNewPlaylistHasBeenCreated + 1
-    );
-  };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getPlayListSet = () => {
@@ -61,7 +54,7 @@ const Playlist = () => {
     };
 
     getPlayListSet();
-  }, [numPlaylists, newPlaylistHasBeenCreated, actionRerender]);
+  }, [numPlaylists, actionRerender]);
 
   const deletePlaylist = (playlistToDeleteId) => {
     const idPlayList = playlistToDeleteId;
@@ -117,7 +110,7 @@ const Playlist = () => {
       <CreatePlaylist
         show={showCreatePlaylist}
         handleClose={handleCloseCreatePlaylist}
-        triggerRerender={newPlaylistAdded}
+        triggerRerender={triggerRerenderPlaylists}
       />
       <EditPlaylist
         show={showEditPlaylist}
