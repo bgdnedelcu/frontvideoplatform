@@ -9,7 +9,7 @@ import Succes from "./Succes";
 const UploadVideo = () => {
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState("");
   const [fieldsIncomplete, setFieldsIncomplete] = useState(false);
   const [succes, setSucces] = useState(false);
 
@@ -52,7 +52,7 @@ const UploadVideo = () => {
       .then(() => {
         setVideoTitle("");
         setVideoDescription("");
-        setSelectedFile(null);
+        setSelectedFile("");
       })
       .catch((err) => {
         console.error(err);

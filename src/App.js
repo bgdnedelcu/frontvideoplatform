@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import JwtService from "./service/jwtservice";
 import VideosFromPlayList from "./components/VideosFromPlaylist";
 import Channel from "./components/Channel";
+import EditAccount from "./components/EditAccount";
 
 function App() {
   const user = JwtService.getUser();
@@ -37,7 +38,14 @@ function App() {
             }
           />
 
-
+          <Route
+            path="/editAccount"
+            element={
+              <ProtectedRoute user={user}>
+                <EditAccount />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/upload"
@@ -105,34 +113,6 @@ function App() {
         </Routes>
       </Router>
     </div>
-
-    // <div className="App">
-    //   <BrowserRouter>
-    //     <div className="mainContent">
-    //       <Routes>
-    //         <Route path="/search" element={<Home />}>
-    //           <Route path="" element={<Home />} />
-    //           <Route path=":searchText" element={<Home />} />
-    //         </Route>
-    //         <Route path="/play" element={<VideoPage />}>
-    //           <Route path=":videoId" element={<VideoPage />} />
-    //         </Route>
-    //         <Route path="/playlists" element={<Playlist />}>
-    //           {/* <Route path=":videoId" element={<VideoPage />} /> */}
-    //         </Route>
-    //       </Routes>
-    //     </div>
-    //   </BrowserRouter>
-    //   <BrowserRouter>
-    //     <div className="nonProtectedRoutes">
-    //       <Routes>
-    //         <Route path="/upload" element={<UploadVideo />} />
-    //         <Route path="/register" element={<Register />} />
-    //         <Route path="/login" element={<Login />} />
-    //       </Routes>
-    //     </div>
-    //   </BrowserRouter>
-    // </div>
   );
 }
 

@@ -14,6 +14,7 @@ import {
   Table,
   Dropdown,
   ButtonGroup,
+  Modal,
 } from "react-bootstrap";
 
 const Home = () => {
@@ -21,7 +22,18 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [playListSet, setPlayListSet] = useState([]);
   const [succesMessage, setSuccesMessage] = useState(false);
+  const [userRole, setUserRole] = useState(undefined);
+  const [showModal, setShowModal] = useState(false);
+  const [videoIdToDelete, setVideoIdToDelete] = useState(undefined);
   const size = 12;
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
 
   const navigate = useNavigate();
 
@@ -113,6 +125,8 @@ const Home = () => {
     };
 
     getPlayListSet();
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
   }, []);
 
   const handleScroll = () => {
@@ -136,6 +150,27 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const deleteVideo = (videoIdToDelete) => {
+    const videoId = videoIdToDelete;
+    const config = {
+      headers: { Authorization: JwtService.addAuthorization() },
+    };
+    axios
+      .delete(
+        `http://localhost:8081/videoplatform/api/video/deleteVideoById/${videoId}`,
+        config
+      )
+      .then(() => {
+        console.log("Video deleted successfully");
+        setVideos((prevVideos) =>
+          prevVideos.filter((video) => video.videoId !== videoIdToDelete)
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <>
@@ -165,7 +200,7 @@ const Home = () => {
               <tbody>
                 {videos.map((video, key) => {
                   return (
-                    <tr key={video.videoId}>
+                    <tr key={video.videoId} id="row + key">
                       <td>{video.videoTitle}</td>
                       <td>
                         <Link
@@ -205,6 +240,18 @@ const Home = () => {
                             })}
                           </Dropdown.Menu>
                         </Dropdown>
+                        {userRole === "admin" && (
+                          <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="danger"
+                            onClick={() => {
+                              handleShowModal();
+                              setVideoIdToDelete(video.videoId);
+                            }}
+                          >
+                            Delete video{" "}
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -214,6 +261,27 @@ const Home = () => {
           </Col>
         </Row>
       </Container>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this video?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              deleteVideo(videoIdToDelete);
+              handleCloseModal();
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

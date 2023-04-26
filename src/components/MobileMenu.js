@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +7,8 @@ import Logout from "./Logout";
 import JwtService from "../service/jwtservice";
 
 const MobileMenu = () => {
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
+  const [userRole, setUserRole] = useState(undefined);
   const user = JwtService.getUser();
   const navigate = useNavigate();
 
@@ -21,8 +22,18 @@ const MobileMenu = () => {
     window.location.reload();
   };
 
+  const goToEditAccount = () => {
+    navigate("/editAccount");
+    window.location.reload();
+  };
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
+  }, []);
 
   return (
     <>
@@ -35,8 +46,16 @@ const MobileMenu = () => {
           <Modal.Title>Menu</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h6>{user}</h6>
+          <h6>
+            {user}
+            {userRole === "admin" && (
+              <span style={{ color: "green" }}> ADMIN</span>
+            )}
+          </h6>
           <div className="modal-content">
+            <Button variant="secondary" onClick={goToEditAccount}>
+              Edit Account
+            </Button>
             <Button variant="success" onClick={goToUpload}>
               Upload new video
             </Button>
