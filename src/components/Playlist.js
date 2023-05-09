@@ -1,94 +1,61 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
-import { Container, Row, Col, Button, Table, Modal } from "react-bootstrap";
-import JwtService from "../service/jwtservice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button, Table, Modal } from "react-bootstrap";
+import Header from "./Header";
 import CreatePlaylist from "./CreatePlaylist";
 import EditPlaylist from "./EditPlaylist";
+import ClientUser from "../service/clientUser";
+import ClientVideo from "../service/clientVideo";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
   const [numPlaylists, setNumPlaylists] = useState(0);
   const [playlistToDeleteId, setPlaylistToDeleteId] = useState(null);
-  const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditPlaylist, setShowEditPlaylist] = useState(false);
+  const [showCreatePlaylistModal, setShowCreatePlaylistModal] = useState(false);
+  const [showDeletePlaylistModal, setShowDeletePlaylistModal] = useState(false);
+  const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   const [playlistIdToEdit, setPlaylistIdToEdit] = useState(null);
   const [actionRerender, setActionRerender] = useState(0);
 
   const navigate = useNavigate();
 
-  const handleCloseDeleteModal = () => setShowDeleteModal(false);
-  const handleShowDeleteModal = () => setShowDeleteModal(true);
-
-  const handleCloseCreatePlaylist = () => setShowCreatePlaylist(false);
-  const handleShowCreatePlaylist = () => setShowCreatePlaylist(true);
-
-  const handleCloseEditPlaylist = () => setShowEditPlaylist(false);
-  const handleShowEditPlaylist = () => setShowEditPlaylist(true);
+  const handleToggleDeleteModal = () =>
+    setShowDeletePlaylistModal(!showDeletePlaylistModal);
+  const handleToggleCreatePlaylistModal = () =>
+    setShowCreatePlaylistModal(!showCreatePlaylistModal);
+  const handleToggleEditPlaylistModal = () =>
+    setShowEditPlaylistModal(!showEditPlaylistModal);
 
   const triggerRerenderPlaylists = () => {
     setActionRerender((prevActionRerender) => prevActionRerender + 1);
     console.log(actionRerender);
   };
 
-  useEffect(() => {
-    const getPlayListSet = () => {
-      const config = {
-        headers: { Authorization: JwtService.addAuthorization() },
-      };
-      axios
-        .get(
-          `http://localhost:8080/videoplatform/api/account/playlistsByEmailFromToken`,
-          config
-        )
-        .then((response) => {
-          setPlayListSet(response.data);
-          setNumPlaylists(response.data.length);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-
-    getPlayListSet();
-  }, [numPlaylists, actionRerender]);
+  const getPlayListSet = () => {
+    ClientUser.getPlaylistByEmailFromToken()
+      .then((response) => {
+        setPlayListSet(response.data);
+        setNumPlaylists(response.data.length);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const deletePlaylist = (playlistToDeleteId) => {
     const idPlayList = playlistToDeleteId;
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-      "Content-Type": "application/json",
-    };
-
-    const config2 = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
 
     const body = {
       idPlayList: idPlayList,
     };
 
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/deleteAllVideosFromPlaylist`,
-        body,
-        config
-      )
+    ClientVideo.deleteAllVideosFromPlaylist(body)
       .then(() => {
-        console.log("All videos from playlist have been deleted");
-        axios
-          .delete(
-            `http://localhost:8080/videoplatform/api/account/deletePlaylistById/${idPlayList}`,
-            config2
-          )
+        ClientUser.deletePlaylistById(idPlayList)
           .then(() => {
-            console.log("The playlist has been deleted");
             setNumPlaylists((prevNumPlaylists) => prevNumPlaylists - 1);
             setPlaylistToDeleteId(null);
-            handleCloseDeleteModal();
+            handleToggleDeleteModal();
           })
           .catch((error) => {
             console.error(error);
@@ -99,22 +66,26 @@ const Playlist = () => {
       });
   };
 
-  const goToVideos = (playlistId, playlistTitle) => {
+  const goToVideos = (playlistId) => {
     const videoPath = "/playlist/".concat(playlistId);
-    navigate(videoPath, { state: { playlistId, playlistTitle } });
+    navigate(videoPath, { state: { playlistId } });
   };
+
+  useEffect(() => {
+    getPlayListSet();
+  }, [numPlaylists, actionRerender]);
 
   return (
     <>
       <Header />
       <CreatePlaylist
-        show={showCreatePlaylist}
-        handleClose={handleCloseCreatePlaylist}
+        show={showCreatePlaylistModal}
+        handleModal={handleToggleCreatePlaylistModal}
         triggerRerender={triggerRerenderPlaylists}
       />
       <EditPlaylist
-        show={showEditPlaylist}
-        handleClose={handleCloseEditPlaylist}
+        show={showEditPlaylistModal}
+        handleModal={handleToggleEditPlaylistModal}
         playlistId={playlistIdToEdit}
         triggerRerender={triggerRerenderPlaylists}
       />
@@ -141,7 +112,7 @@ const Playlist = () => {
                     Press the right button to create a new playlist{" "}
                     <Button
                       style={{ marginLeft: "30px" }}
-                      onClick={handleShowCreatePlaylist}
+                      onClick={handleToggleCreatePlaylistModal}
                     >
                       Create new Playlist
                     </Button>
@@ -162,7 +133,7 @@ const Playlist = () => {
                         className="buttonFromPlaylist"
                         value={playlist.id}
                         onClick={() => {
-                          handleShowEditPlaylist();
+                          handleToggleEditPlaylistModal();
                           setPlaylistIdToEdit(playlist.id);
                         }}
                       >
@@ -173,7 +144,7 @@ const Playlist = () => {
                         value={playlist.id}
                         variant="danger"
                         onClick={() => {
-                          handleShowDeleteModal();
+                          handleToggleDeleteModal();
                           setPlaylistToDeleteId(playlist.id);
                         }}
                       >
@@ -188,13 +159,13 @@ const Playlist = () => {
         </Row>
       </Container>
 
-      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+      <Modal show={showDeletePlaylistModal} onHide={handleToggleDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm delete</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete the playlist?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+          <Button variant="secondary" onClick={handleToggleDeleteModal}>
             Cancel
           </Button>
           <Button

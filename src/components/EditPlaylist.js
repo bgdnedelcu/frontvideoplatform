@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import axios from "axios";
-import JwtService from "../service/jwtservice";
 import { Button, Form, Modal } from "react-bootstrap";
+import ClientUser from "../service/clientUser";
 
-const EditPlaylist = ({ handleClose, show, playlistId, triggerRerender }) => {
+const EditPlaylist = ({ handleModal, show, playlistId, triggerRerender }) => {
   let titleInput;
 
   const setTitle = (text) => {
@@ -11,18 +9,10 @@ const EditPlaylist = ({ handleClose, show, playlistId, triggerRerender }) => {
   };
 
   const editPlaylistTitle = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
     const formData = new FormData();
     formData.append("title", titleInput);
 
-    axios
-      .put(
-        `http://localhost:8080/videoplatform/api/account/editPlaylistTitle/${playlistId}`,
-        formData,
-        config
-      )
+    ClientUser.editPlaylist(formData, playlistId)
       .then(() => {
         triggerRerender();
       })
@@ -32,7 +22,7 @@ const EditPlaylist = ({ handleClose, show, playlistId, triggerRerender }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleModal}>
       <Modal.Header closeButton>
         <Modal.Title>Edit playlist title</Modal.Title>
       </Modal.Header>
@@ -53,12 +43,12 @@ const EditPlaylist = ({ handleClose, show, playlistId, triggerRerender }) => {
               variant="primary"
               onClick={() => {
                 editPlaylistTitle();
-                handleClose();
+                handleModal();
               }}
             >
               Save
             </Button>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleModal}>
               Close
             </Button>
           </div>

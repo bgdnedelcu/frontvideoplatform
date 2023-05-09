@@ -1,9 +1,8 @@
 import React from "react";
-import axios from "axios";
-import JwtService from "../service/jwtservice";
 import { Button, Form, Modal } from "react-bootstrap";
+import ClientUser from "../service/clientUser";
 
-const CreatePlaylist = ({ handleClose, show, triggerRerender }) => {
+const CreatePlaylist = ({ handleModal, show, triggerRerender }) => {
   let titleInput;
 
   const setTitle = (text) => {
@@ -11,21 +10,11 @@ const CreatePlaylist = ({ handleClose, show, triggerRerender }) => {
   };
 
   const createPlaylist = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-      "Content-Type": "application/json",
-    };
-
     const body = {
       title: titleInput,
     };
 
-    axios
-      .post(
-        "http://localhost:8080/videoplatform/api/account/createNewPlayList",
-        body,
-        config
-      )
+    ClientUser.createNewPlayList(body)
       .then(() => {
         triggerRerender();
       })
@@ -35,7 +24,7 @@ const CreatePlaylist = ({ handleClose, show, triggerRerender }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleModal}>
       <Modal.Header closeButton>
         <Modal.Title>Create Playlist</Modal.Title>
       </Modal.Header>
@@ -56,12 +45,12 @@ const CreatePlaylist = ({ handleClose, show, triggerRerender }) => {
               variant="primary"
               onClick={() => {
                 createPlaylist();
-                handleClose();
+                handleModal();
               }}
             >
               Save
             </Button>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleModal}>
               Close
             </Button>
           </div>

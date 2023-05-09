@@ -1,8 +1,5 @@
-import Header from "./Header";
 import { useState, useEffect } from "react";
-import JwtService from "../service/jwtservice";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import {
   Container,
   Row,
@@ -13,6 +10,9 @@ import {
   ButtonGroup,
   Alert,
 } from "react-bootstrap";
+import Header from "./Header";
+import ClientUser from "../service/clientUser";
+import ClientVideo from "../service/clientVideo";
 
 const Channel = () => {
   const [videos, setVideos] = useState([]);
@@ -27,50 +27,35 @@ const Channel = () => {
   useEffect(() => {
     setChannel(channelVideo);
   }, []);
-  
-  useEffect(() => {
-    const getPlayListSet = () => {
-      if (channel) {
-        const config = {
-          headers: { Authorization: JwtService.addAuthorization() },
-        };
-        axios
-          .get(
-            `http://localhost:8080/videoplatform/api/account/playlistsByEmailFromToken`,
-            config
-          )
-          .then((response) => {
-            setPlayListSet(response.data);
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    };
 
-    const getSongsFromChannel = () => {
-      if (channel) {
-        const config = {
-          headers: { Authorization: JwtService.addAuthorization() },
-        };
-        axios
-          .get(
-            `http://localhost:8081/videoplatform/api/video/getVideosByChannelName/${channel}`,
-            config
-          )
-          .then((response) => {
-            setVideos(response.data);
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    };
+  useEffect(() => {
     getPlayListSet();
     getSongsFromChannel();
   }, [channel]);
+
+  const getPlayListSet = () => {
+    if (channel) {
+      ClientUser.getPlaylistByEmailFromToken()
+        .then((response) => {
+          setPlayListSet(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const getSongsFromChannel = () => {
+    if (channel) {
+      ClientVideo.getVideosByChannelName(channel)
+        .then((response) => {
+          setVideos(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
 
   const addToPlaylist = (e) => {
     const load = e.target.dataset.id;
@@ -78,24 +63,12 @@ const Channel = () => {
     const idPlaylistList = params[0];
     const idVideo = params[1];
 
-    const config = {
-      headers: {
-        Authorization: JwtService.addAuthorization(),
-        "Content-Type": "application/json",
-      },
-    };
-
     const body = {
       idPlayList: idPlaylistList,
       idVideo: idVideo,
     };
 
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/insertToPlaylist`,
-        body,
-        config
-      )
+    ClientVideo.insertToPlaylist(body)
       .then(() => {
         setSuccesMessage(true);
       })

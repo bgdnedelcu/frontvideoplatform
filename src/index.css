@@ -188,3 +188,12 @@ body {
   border-width: 5px;
   border-color: black; */
 }
+
+.addedToPlaylist,
+.alreadyInPlaylist {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 600px;
+  padding-right: 600px;
+}

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
-import UserService from "../service/UserService";
 import IncompletsFieldsError from "./IncompletsFieldsError";
+import ClientUser from "../service/clientUser";
 
 const Register = () => {
   const [emailInput, setEmail] = useState("");
@@ -11,6 +11,39 @@ const Register = () => {
   const [error, setError] = useState(false);
   const [successMessage, setSuccesMessage] = useState(false);
   const [fieldsIncomplete, setFieldsIncomplete] = useState(false);
+
+  const createAccount = (e) => {
+    e.preventDefault();
+
+    if (emailInput === "" || passwordInput === "" || channelNameInput === "") {
+      setFieldsIncomplete(true);
+      return;
+    }
+
+    const accountData = {
+      email: emailInput,
+      password: passwordInput,
+      channelName: channelNameInput,
+    };
+    ClientUser.createAccount(accountData)
+      .then(() => {
+        setEmail("");
+        setPassword("");
+        setChannelName("");
+        setError(false);
+        setFieldsIncomplete(false);
+        setSuccesMessage(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.response.data === "Account already exists!") {
+          setError(true);
+        } else {
+          setFieldsIncomplete(true);
+        }
+        setSuccesMessage(false);
+      });
+  };
 
   useEffect(() => {
     let successMessageTimer, errorTimer, fieldsIncompleteTimer;
@@ -39,40 +72,6 @@ const Register = () => {
       clearTimeout(fieldsIncompleteTimer);
     };
   }, [successMessage, error, fieldsIncomplete]);
-
-  const createAccount = (e) => {
-    e.preventDefault();
-
-    if (emailInput === "" || passwordInput === "" || channelNameInput === "") {
-      setFieldsIncomplete(true);
-      return;
-    }
-
-    const accountData = {
-      email: emailInput,
-      password: passwordInput,
-      channelName: channelNameInput,
-    };
-    UserService.createAccount(accountData)
-      .then(() => {
-        setEmail("");
-        setPassword("");
-        setChannelName("");
-        setError(false);
-        setFieldsIncomplete(false);
-        setSuccesMessage(true);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        if (error.response.data === "Account already exists!") {
-          console.log(error.response.data);
-          setError(true);
-        } else {
-          setFieldsIncomplete(true);
-        }
-        setSuccesMessage(false);
-      });
-  };
 
   return (
     <Container fluid className="d-flex align-items-center min-vh-100">

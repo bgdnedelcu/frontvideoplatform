@@ -1,31 +1,17 @@
 import { useState } from "react";
-import axios from "axios";
-import JwtService from "../service/jwtservice";
+import ClientVideo from "../service/clientVideo";
 
 const AddComment = ({ idVideo, onCommentAdded }) => {
   const [content, setContent] = useState("");
 
   const saveComment = (event) => {
     event.preventDefault();
-    const config = {
-      headers: {
-        Authorization: JwtService.addAuthorization(),
-        "Content-Type": "text/plain",
-      },
-    };
-
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/addComment?idVideo=${idVideo}`,
-        content,
-        config
-      )
-      .then((response) => {
-        console.log(response);
+    ClientVideo.addComment(content, idVideo)
+      .then(() => {
         onCommentAdded();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
     setContent("");
   };

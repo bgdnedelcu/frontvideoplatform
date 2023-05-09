@@ -1,8 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Navbar, Container, Form, FormControl, Button } from "react-bootstrap";
 import MobileMenu from "./MobileMenu";
-
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [searchText, setSearchText] = useState("");

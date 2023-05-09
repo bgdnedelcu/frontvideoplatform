@@ -6,16 +6,20 @@ const parseJwt = (token) => {
   }
 };
 
-const checkJwt = () => {
+const checkJwtTime = () => {
   const token = JSON.parse(localStorage.getItem("token"));
-  console.log("token " + token);
   if (token) {
-    console.log("token inside " + token);
     const decodedJwt = parseJwt(token);
     if (decodedJwt.exp * 1000 < Date.now()) {
       return true;
     }
   }
+  return false;
+};
+
+const checkJwt = () => {
+  const token = JSON.parse(localStorage.getItem("token"));
+  if (token) return true;
   return false;
 };
 
@@ -32,7 +36,6 @@ const getUser = () => {
   if (token) {
     const decodedJwt = parseJwt(token);
     return decodedJwt.sub;
-    // .sub => email
   }
   return null;
 };
@@ -46,9 +49,10 @@ const addAuthorization = () => {
 
 const JwtService = {
   getRole,
-  checkJwt,
+  checkJwtTime,
   addAuthorization,
   getUser,
+  checkJwt,
 };
 
 export default JwtService;

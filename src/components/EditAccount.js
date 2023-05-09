@@ -1,12 +1,10 @@
-import Header from "./Header";
-import { Form, Button, Container } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import JwtService from "../service/jwtservice";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Form, Button, Container } from "react-bootstrap";
+import Header from "./Header";
+import ClientUser from "../service/clientUser";
 
 const EditAccount = () => {
-  const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [channel, setChannel] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -14,43 +12,27 @@ const EditAccount = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
-
-    const getChannelName = () => {
-      axios
-        .get(
-          "http://localhost:8080/videoplatform/api/account/channelName",
-          config
-        )
-        .then((response) => {
-          setChannel(response.data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
-    getChannelName();
+    loadChannelName();
   }, []);
 
-  const submitChanges = () => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
+  const loadChannelName = () => {
+    ClientUser.getChannelName()
+      .then((response) => {
+        setChannel(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
+  const submitChanges = () => {
     const body = {
       currentPassword: currentPassword,
       newPassword: newPassword,
       newChannelName: channel,
     };
 
-    axios
-      .post(
-        "http://localhost:8080/videoplatform/api/account/updateAccount",
-        body,
-        config
-      )
+    ClientUser.updateAccount(body)
       .then(() => {
         actionLogout();
       })

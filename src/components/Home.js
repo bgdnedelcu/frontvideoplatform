@@ -1,11 +1,6 @@
 import React from "react";
-import Header from "./Header";
 import { useState, useEffect } from "react";
-import JwtService from "../service/jwtservice";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { Alert } from "react-bootstrap";
-import axios from "axios";
-
 import {
   Container,
   Row,
@@ -15,59 +10,74 @@ import {
   Dropdown,
   ButtonGroup,
   Modal,
+  Alert,
 } from "react-bootstrap";
+import Header from "./Header";
+import JwtService from "../service/jwtservice";
+import ClientVideo from "../service/clientVideo";
+import ClientUser from "../service/clientUser";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(0);
   const [playListSet, setPlayListSet] = useState([]);
   const [succesMessage, setSuccesMessage] = useState(false);
+  const [errorVideoAlreadyInPlaylist, setError] = useState(false);
   const [userRole, setUserRole] = useState(undefined);
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [videoIdToDelete, setVideoIdToDelete] = useState(undefined);
-  const size = 12;
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const navigate = useNavigate();
 
   const { searchText } = useParams();
+  const navigate = useNavigate();
+  const size = 12;
 
-  useEffect(() => {
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-      params: {
-        size: size,
-        page: page,
-      },
+  const handleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+
+  const play = (e) => {
+    const videoId = e.target.value;
+    const videoPath = "/play/".concat(videoId);
+    navigate(videoPath, { state: { videoId } });
+    console.log(videoPath);
+    console.log("call");
+  };
+
+  const loadVideos = () => {
+    const config = ClientVideo.defaultConfig;
+    config["params"] = {
+      size: size,
+      page: page,
     };
 
-    let baseUrl = "http://localhost:8081/videoplatform/api/video/";
+    let baseUrl = ClientVideo.VIDEO_MS_URL;
     if (searchText == null) {
-      baseUrl = baseUrl.concat("home");
+      baseUrl = baseUrl.concat("/home");
     } else {
-      baseUrl = baseUrl.concat("search/").concat(searchText);
-      console.log(baseUrl);
+      baseUrl = baseUrl.concat("/search/").concat(searchText);
     }
 
-    axios
-      .get(baseUrl, config)
+    ClientVideo.loadVideosForHome(baseUrl, config)
       .then((response) => {
-        console.log(response.data);
         const newVideos = response.data;
         setVideos((prevVideos) => [...prevVideos, ...newVideos]);
-        console.log(searchText);
+
+        console.log(response.data);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [page]);
+
+    console.log(page);
+  };
+
+  const getPlayListSet = () => {
+    ClientUser.getPlaylistsByEmailFromToken()
+      .then((response) => {
+        setPlayListSet(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const addToPlaylist = (e) => {
     const load = e.target.dataset.id;
@@ -75,102 +85,69 @@ const Home = () => {
     const idPlaylistList = params[0];
     const idVideo = params[1];
 
-    const config = {
-      headers: {
-        Authorization: JwtService.addAuthorization(),
-        "Content-Type": "application/json",
-      },
-    };
-
     const body = {
       idPlayList: idPlaylistList,
       idVideo: idVideo,
     };
 
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/insertToPlaylist`,
-        body,
-        config
-      )
+    ClientVideo.insertToPlaylist(body)
       .then(() => {
         setSuccesMessage(true);
+        setError(false);
       })
       .catch((err) => {
+        if (err.response.status === 400) {
+          setError(true);
+          setSuccesMessage(false);
+        }
         console.error(err);
       });
 
     setTimeout(() => {
+      setError(false);
+    }, 5000);
+
+    setTimeout(() => {
       setSuccesMessage(false);
-    }, 1000);
+    }, 5000);
   };
-
-  useEffect(() => {
-    const getPlayListSet = () => {
-      const config = {
-        headers: { Authorization: JwtService.addAuthorization() },
-      };
-      axios
-        .get(
-          `http://localhost:8080/videoplatform/api/account/playlistsByEmailFromToken`,
-          config
-        )
-        .then((response) => {
-          setPlayListSet(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-
-    getPlayListSet();
-    const userRole = JwtService.getRole();
-    setUserRole(userRole);
-  }, []);
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
-    ) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const play = (e) => {
-    const videoId = e.target.value;
-    const videoPath = "/play/".concat(videoId);
-    navigate(videoPath, { state: { videoId } });
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   const deleteVideo = (videoIdToDelete) => {
     const videoId = videoIdToDelete;
-    const config = {
-      headers: { Authorization: JwtService.addAuthorization() },
-    };
-    axios
-      .delete(
-        `http://localhost:8081/videoplatform/api/video/deleteVideoById/${videoId}`,
-        config
-      )
+    ClientVideo.deleteVideoById(videoId)
       .then(() => {
-        console.log("Video deleted successfully");
         setVideos((prevVideos) =>
-          prevVideos.filter((video) => video.videoId !== videoIdToDelete)
+          prevVideos.filter((video) => video.videoId !== videoId)
         );
       })
       .catch((error) => {
         console.error(error);
       });
   };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop === //sau >=
+      document.documentElement.offsetHeight
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    loadVideos();
+  }, [page]);
+
+  useEffect(() => {
+    getPlayListSet();
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -180,8 +157,21 @@ const Home = () => {
           <Col sm={4}>
             {succesMessage && (
               <>
-                <Alert variant={"success"} className="customPlayer">
-                  Successfully added to the playlist!
+                <Alert
+                  className="addedToPlaylist fixed-bottom alert-success"
+                  variant="success"
+                >
+                  The video has been successfully added to the playlist!
+                </Alert>
+              </>
+            )}
+            {errorVideoAlreadyInPlaylist && (
+              <>
+                <Alert
+                  className="alreadyInPlaylist fixed-bottom alert-danger"
+                  variant="danger"
+                >
+                  The video is already in this playlist!
                 </Alert>
               </>
             )}
@@ -200,7 +190,7 @@ const Home = () => {
               <tbody>
                 {videos.map((video, key) => {
                   return (
-                    <tr key={video.videoId} id="row + key">
+                    <tr key={video.videoId}>
                       <td>{video.videoTitle}</td>
                       <td>
                         <Link
@@ -245,7 +235,7 @@ const Home = () => {
                             style={{ marginLeft: "10px" }}
                             variant="danger"
                             onClick={() => {
-                              handleShowModal();
+                              handleDeleteModal();
                               setVideoIdToDelete(video.videoId);
                             }}
                           >
@@ -262,20 +252,20 @@ const Home = () => {
         </Row>
       </Container>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showDeleteModal} onHide={handleDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm delete</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this video?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleDeleteModal}>
             Cancel
           </Button>
           <Button
             variant="danger"
             onClick={() => {
               deleteVideo(videoIdToDelete);
-              handleCloseModal();
+              handleDeleteModal();
             }}
           >
             Delete

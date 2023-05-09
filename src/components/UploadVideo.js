@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import Header from "./Header";
-import IncompletsFieldsError from "./IncompletsFieldsError";
-import axios from "axios";
-import JwtService from "../service/jwtservice";
 import Succes from "./Succes";
+import IncompletsFieldsError from "./IncompletsFieldsError";
+import ClientVideo from "../service/clientVideo";
 
 const UploadVideo = () => {
   const [videoTitle, setVideoTitle] = useState("");
@@ -37,18 +36,7 @@ const UploadVideo = () => {
     formData.append("title", videoTitle);
     formData.append("description", videoDescription);
     formData.append("file", selectedFile);
-    const config = {
-      headers: {
-        Authorization: JwtService.addAuthorization(),
-      },
-    };
-
-    axios
-      .post(
-        `http://localhost:8081/videoplatform/api/video/upload`,
-        formData,
-        config
-      )
+    ClientVideo.uploadVideo(formData)
       .then(() => {
         setVideoTitle("");
         setVideoDescription("");

@@ -27,8 +27,7 @@ const MobileMenu = () => {
     window.location.reload();
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleModal = () => setShow(!show);
 
   useEffect(() => {
     const userRole = JwtService.getRole();
@@ -37,11 +36,11 @@ const MobileMenu = () => {
 
   return (
     <>
-      <Button variant="outline-primary" className="me-3" onClick={handleShow}>
+      <Button variant="outline-primary" className="me-3" onClick={handleModal}>
         <FontAwesomeIcon icon={faBars} />
       </Button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleModal}>
         <Modal.Header closeButton>
           <Modal.Title>Menu</Modal.Title>
         </Modal.Header>

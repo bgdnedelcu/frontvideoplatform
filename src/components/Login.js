@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
 import IncompletsFieldsError from "./IncompletsFieldsError";
-import UserService from "../service/UserService";
+import ClientUser from "../service/clientUser";
 
 const Login = () => {
   const [emailInput, setEmail] = useState("");
@@ -12,6 +12,40 @@ const Login = () => {
   const [error, setError] = useState(false);
   const [shownPassword, setShownPassword] = useState(false);
   const navigate = useNavigate();
+
+  const loginAccount = (event) => {
+    event.preventDefault();
+
+    if (emailInput === "" || passwordInput === "") {
+      setFieldsIncomplete(true);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("username", emailInput);
+    formData.append("password", passwordInput);
+
+    ClientUser.login(formData)
+      .then((response) => {
+        setError(false);
+        setFieldsIncomplete(false);
+
+        const token = response.headers.get("Access-Token");
+        localStorage.setItem("token", JSON.stringify(token));
+        navigate("/search");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        if (error.response.status !== 200) {
+          setError(true);
+        }
+      });
+  };
+
+  const handleShownPassword = () => {
+    setShownPassword(!shownPassword);
+  };
 
   useEffect(() => {
     let fieldsIncompleteTimer, errorTimer;
@@ -33,41 +67,6 @@ const Login = () => {
       clearTimeout(fieldsIncompleteTimer);
     };
   }, [error, fieldsIncomplete]);
-
-  const loginAccount = (event) => {
-    event.preventDefault();
-
-    if (emailInput === "" || passwordInput === "") {
-      setFieldsIncomplete(true);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("username", emailInput);
-    formData.append("password", passwordInput);
-
-    UserService.login(formData)
-      .then((response) => {
-        setError(false);
-        setFieldsIncomplete(false);
-
-        const token = response.headers.get("Access-Token");
-        localStorage.setItem("token", JSON.stringify(token));
-        navigate("/search");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        if (error.response.status !== 200) {
-          console.log(error.response.status);
-          setError(true);
-        }
-      });
-  };
-
-  const toggleShownPassword = () => {
-    setShownPassword(!shownPassword);
-  };
 
   return (
     <Container fluid className="d-flex align-items-center min-vh-100">
@@ -96,7 +95,7 @@ const Login = () => {
             </Form.Group>
             <Button
               variant="link"
-              onClick={toggleShownPassword}
+              onClick={handleShownPassword}
               className="p-2 ml-2"
             >
               {shownPassword ? "Hide Password" : "Show Password"}

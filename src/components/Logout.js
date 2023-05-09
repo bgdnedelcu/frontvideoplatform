@@ -6,8 +6,7 @@ const Logout = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleModal = () => setShow(!show);
 
   const actionLogout = () => {
     localStorage.removeItem("token");
@@ -17,16 +16,16 @@ const Logout = () => {
 
   return (
     <>
-      <Button variant="outline-primary" className="me-3" onClick={handleShow}>
+      <Button variant="outline-primary" className="me-3" onClick={handleModal}>
         Logout
       </Button>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are you sure you want to logout?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleModal}>
             Cancel
           </Button>
           <Button variant="primary" onClick={actionLogout}>
