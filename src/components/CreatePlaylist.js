@@ -2,7 +2,13 @@ import React from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import ClientUser from "../service/clientUser";
 
-const CreatePlaylist = ({ handleModal, show, triggerRerender }) => {
+const CreatePlaylist = ({
+  handleModal,
+  show,
+  triggerRerender,
+  setSuccesMessage,
+  handleMessages,
+}) => {
   let titleInput;
 
   const setTitle = (text) => {
@@ -17,10 +23,16 @@ const CreatePlaylist = ({ handleModal, show, triggerRerender }) => {
     ClientUser.createNewPlayList(body)
       .then(() => {
         triggerRerender();
+        setSuccesMessage(true);
+        handleMessages();
       })
       .catch((err) => {
         console.error(err);
       });
+
+    setTimeout(() => {
+      setSuccesMessage(false);
+    }, 2500);
   };
 
   return (

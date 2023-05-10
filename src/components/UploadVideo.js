@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import { Form, Button, Container, Alert } from "react-bootstrap";
 import Header from "./Header";
-import Succes from "./Succes";
 import IncompletsFieldsError from "./IncompletsFieldsError";
 import ClientVideo from "../service/clientVideo";
 
@@ -41,15 +40,19 @@ const UploadVideo = () => {
         setVideoTitle("");
         setVideoDescription("");
         setSelectedFile("");
+        setSucces(true);
       })
       .catch((err) => {
         console.error(err);
       });
+
+    setTimeout(() => {
+      setSucces(false);
+    }, 5000);
   };
 
   useEffect(() => {
     let fieldsIncompleteTimer;
-    let succesTimer;
 
     if (fieldsIncomplete) {
       fieldsIncompleteTimer = setTimeout(() => {
@@ -57,17 +60,10 @@ const UploadVideo = () => {
       }, 5000);
     }
 
-    if (succes) {
-      succesTimer = setTimeout(() => {
-        setSucces(false);
-      }, 5000);
-    }
-
     return () => {
       clearTimeout(fieldsIncompleteTimer);
-      clearTimeout(succesTimer);
     };
-  }, [fieldsIncomplete, succes]);
+  }, [fieldsIncomplete]);
 
   return (
     <>
@@ -109,7 +105,16 @@ const UploadVideo = () => {
           </Button>
         </Form>
         {fieldsIncomplete && <IncompletsFieldsError />}
-        {succes && <Succes />}
+        {succes && (
+          <div>
+            <Alert
+              className="alertUser fixed-bottom alert-success"
+              variant="success"
+            >
+              The video has been uploaded!
+            </Alert>
+          </div>
+        )}
       </Container>
     </>
   );

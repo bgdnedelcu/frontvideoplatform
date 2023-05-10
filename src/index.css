@@ -41,12 +41,9 @@ body {
   min-width: 100%;
   height: 900px;
   padding-top: 90px;
-
-
 }
 
 .videoChannel {
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -89,7 +86,6 @@ body {
   border-style: solid;
   border-width: 5px;
   border-color: black;
-
 }
 
 .proba {
@@ -98,7 +94,6 @@ body {
 
 .upload-container {
   min-height: 100vh;
-
   padding-top: 100px;
 }
 
@@ -157,7 +152,6 @@ body {
   border-color: black;
 }
 
-
 .login-container {
   margin: 100px auto;
   min-width: 50vh;
@@ -189,11 +183,11 @@ body {
   border-color: black; */
 }
 
-.addedToPlaylist,
-.alreadyInPlaylist {
+.alertUser {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 600px;
-  padding-right: 600px;
+  width: 30%;
+  margin: 0 auto;
+  font-size: 20px;
 }

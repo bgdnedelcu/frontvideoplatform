@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button, Table, Modal } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Table,
+  Modal,
+  Alert,
+} from "react-bootstrap";
 import Header from "./Header";
 import NotFound from "./NotFound";
 import ClientVideo from "../service/clientVideo";
@@ -13,6 +21,7 @@ const VideosFromPlayList = () => {
   const [videoToDeleteId, setVideoToDeleteId] = useState(null);
   const [playlistTitle, setPlaylistTitle] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
+  const [succesDelete, setSuccesDelete] = useState(false);
 
   const { playlistId } = useParams();
   const navigate = useNavigate();
@@ -64,10 +73,15 @@ const VideosFromPlayList = () => {
         );
         setVideoToDeleteId(null);
         handleShowModal();
+        setSuccesDelete(true);
       })
       .catch((err) => {
         console.error(err);
       });
+
+    setTimeout(() => {
+      setSuccesDelete(false);
+    }, 2500);
   };
 
   useEffect(() => {
@@ -141,6 +155,16 @@ const VideosFromPlayList = () => {
               </Table>
             </Col>
           </Row>
+          {succesDelete && (
+            <div>
+              <Alert
+                className="alertUser fixed-bottom alert-success"
+                variant="success"
+              >
+                The video has been deleted from playlist!
+              </Alert>
+            </div>
+          )}
         </Container>
       )}
       {errorStatus && <NotFound />}

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button, Table, Modal } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Table,
+  Modal,
+  Alert,
+} from "react-bootstrap";
 import Header from "./Header";
 import CreatePlaylist from "./CreatePlaylist";
 import EditPlaylist from "./EditPlaylist";
@@ -15,6 +23,9 @@ const Playlist = () => {
   const [showDeletePlaylistModal, setShowDeletePlaylistModal] = useState(false);
   const [showEditPlaylistModal, setShowEditPlaylistModal] = useState(false);
   const [playlistIdToEdit, setPlaylistIdToEdit] = useState(null);
+  const [succesDelete, setSuccesDelete] = useState(false);
+  const [succesAdded, setSuccesAdded] = useState(false);
+  const [succesEdit, setSuccesEdit] = useState(false);
   const [actionRerender, setActionRerender] = useState(0);
 
   const navigate = useNavigate();
@@ -29,6 +40,16 @@ const Playlist = () => {
   const triggerRerenderPlaylists = () => {
     setActionRerender((prevActionRerender) => prevActionRerender + 1);
     console.log(actionRerender);
+  };
+
+  const handleMessagesForEdit = () => {
+    setSuccesDelete(false);
+    setSuccesAdded(false);
+  };
+
+  const handleMessagesForCreate = () => {
+    setSuccesDelete(false);
+    setSuccesEdit(false);
   };
 
   const getPlayListSet = () => {
@@ -56,6 +77,9 @@ const Playlist = () => {
             setNumPlaylists((prevNumPlaylists) => prevNumPlaylists - 1);
             setPlaylistToDeleteId(null);
             handleToggleDeleteModal();
+            setSuccesDelete(true);
+            setSuccesAdded(false);
+            setSuccesEdit(false);
           })
           .catch((error) => {
             console.error(error);
@@ -64,6 +88,10 @@ const Playlist = () => {
       .catch((error) => {
         console.error(error);
       });
+
+    setTimeout(() => {
+      setSuccesDelete(false);
+    }, 2500);
   };
 
   const goToVideos = (playlistId) => {
@@ -82,12 +110,17 @@ const Playlist = () => {
         show={showCreatePlaylistModal}
         handleModal={handleToggleCreatePlaylistModal}
         triggerRerender={triggerRerenderPlaylists}
+        succesMessage={succesAdded}
+        setSuccesMessage={setSuccesAdded}
+        handleMessages={handleMessagesForCreate}
       />
       <EditPlaylist
         show={showEditPlaylistModal}
         handleModal={handleToggleEditPlaylistModal}
         playlistId={playlistIdToEdit}
         triggerRerender={triggerRerenderPlaylists}
+        setSuccesMessage={setSuccesEdit}
+        handleMessages={handleMessagesForEdit}
       />
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
@@ -157,6 +190,36 @@ const Playlist = () => {
             </Table>
           </Col>
         </Row>
+        {succesDelete && (
+          <div>
+            <Alert
+              className="alertUser fixed-bottom alert-success"
+              variant="success"
+            >
+              The playlist has been deleted!
+            </Alert>
+          </div>
+        )}
+        {succesAdded && (
+          <div>
+            <Alert
+              className="alertUser fixed-bottom alert-success"
+              variant="success"
+            >
+              New playlist has been created!
+            </Alert>
+          </div>
+        )}
+        {succesEdit && (
+          <div>
+            <Alert
+              className="alertUser fixed-bottom alert-success"
+              variant="success"
+            >
+              The playlist name has been changed!
+            </Alert>
+          </div>
+        )}
       </Container>
 
       <Modal show={showDeletePlaylistModal} onHide={handleToggleDeleteModal}>

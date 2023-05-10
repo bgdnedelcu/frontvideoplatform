@@ -15,7 +15,7 @@ const Header = () => {
   };
 
   const goToHome = () => {
-    navigate("/search");
+    navigate("/home");
     window.location.reload();
   };
 

@@ -7,6 +7,7 @@ import {
   Button,
   Dropdown,
   ButtonGroup,
+  Alert,
 } from "react-bootstrap";
 import Header from "./Header";
 import AddComment from "./AddComment";
@@ -28,6 +29,10 @@ const VideoPage = () => {
   const [commentsUpdated, setCommentsUpdated] = useState(0);
   const [playListSet, setPlayListSet] = useState([]);
   const [videoNotFound, setVideoNotFound] = useState(false);
+  const [succesAddToPlaylist, setSuccesAddedToPlaylist] = useState(false);
+  const [succesDeleteComment, setSuccesDeleteComment] = useState(false);
+  const [succesAddComment, setSuccesCommentAdded] = useState(false);
+  const [errorVideoAlreadyInPlaylist, setError] = useState(false);
 
   const { videoId } = useParams();
 
@@ -136,12 +141,39 @@ const VideoPage = () => {
     };
 
     ClientVideo.insertToPlaylist(body)
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        setSuccesAddedToPlaylist(true);
+        setError(false);
+        setSuccesDeleteComment(false);
+        setSuccesCommentAdded(false);
+        setTimeout(() => {
+          setSuccesAddedToPlaylist(false);
+        }, 2500);
       })
       .catch((err) => {
+        if (err.response.status === 400) {
+          setError(true);
+          setSuccesAddedToPlaylist(false);
+          setSuccesDeleteComment(false);
+          setSuccesCommentAdded(false);
+          setTimeout(() => {
+            setError(false);
+          }, 2500);
+        }
         console.error(err);
       });
+  };
+
+  const handleMessagesForAddComment = () => {
+    setSuccesAddedToPlaylist(false);
+    setError(false);
+    setSuccesDeleteComment(false);
+  };
+
+  const handleMessagesForDeleteComment = () => {
+    setSuccesAddedToPlaylist(false);
+    setError(false);
+    setSuccesCommentAdded(false);
   };
 
   useEffect(() => {
@@ -265,6 +297,8 @@ const VideoPage = () => {
                     <AddComment
                       idVideo={videoId}
                       onCommentAdded={handleCommentAdded}
+                      setSuccesCommentAdded={setSuccesCommentAdded}
+                      handleMessages={handleMessagesForAddComment}
                     />
                   </div>
                 </Col>
@@ -277,10 +311,52 @@ const VideoPage = () => {
                     videoId={videoId}
                     commenter={commenter}
                     commentsUpdated={commentsUpdated}
+                    setSuccesDeleteMessage={setSuccesDeleteComment}
+                    handleMessages={handleMessagesForDeleteComment}
                   />
                 </div>
               </Col>
             </Row>
+            {succesAddToPlaylist && (
+              <div>
+                <Alert
+                  className="alertUser fixed-bottom alert-success"
+                  variant="success"
+                >
+                  The video has been successfully added to the playlist!
+                </Alert>
+              </div>
+            )}
+            {errorVideoAlreadyInPlaylist && (
+              <div>
+                <Alert
+                  className="alertUser fixed-bottom alert-danger"
+                  variant="danger"
+                >
+                  The video is already in this playlist!
+                </Alert>
+              </div>
+            )}
+            {succesDeleteComment && (
+              <div>
+                <Alert
+                  className="alertUser fixed-bottom alert-success"
+                  variant="success"
+                >
+                  The comment has been deleted!
+                </Alert>
+              </div>
+            )}
+            {succesAddComment && (
+              <div>
+                <Alert
+                  className="alertUser fixed-bottom alert-success"
+                  variant="success"
+                >
+                  Comment added!
+                </Alert>
+              </div>
+            )}
           </Container>
         </>
       )}

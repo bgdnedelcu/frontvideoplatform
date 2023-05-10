@@ -1,7 +1,12 @@
 import { useState } from "react";
 import ClientVideo from "../service/clientVideo";
 
-const AddComment = ({ idVideo, onCommentAdded }) => {
+const AddComment = ({
+  idVideo,
+  onCommentAdded,
+  setSuccesCommentAdded,
+  handleMessages,
+}) => {
   const [content, setContent] = useState("");
 
   const saveComment = (event) => {
@@ -9,11 +14,17 @@ const AddComment = ({ idVideo, onCommentAdded }) => {
     ClientVideo.addComment(content, idVideo)
       .then(() => {
         onCommentAdded();
+        setSuccesCommentAdded(true);
+        handleMessages();
       })
       .catch((error) => {
         console.error(error);
       });
     setContent("");
+
+    setTimeout(() => {
+      setSuccesCommentAdded(false);
+    }, 2500);
   };
 
   const changeContent = (event) => {

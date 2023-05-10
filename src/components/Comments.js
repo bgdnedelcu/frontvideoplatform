@@ -4,7 +4,12 @@ import { Button, Modal } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
 import ClientVideo from "../service/clientVideo";
 
-const Comments = ({ videoId, commentsUpdated }) => {
+const Comments = ({
+  videoId,
+  commentsUpdated,
+  setSuccesDeleteMessage,
+  handleMessages,
+}) => {
   const [comments, setComments] = useState([]);
   const [userId, setUserId] = useState(null);
   const [commentDeleted, setCommentDeleted] = useState(false);
@@ -43,10 +48,16 @@ const Comments = ({ videoId, commentsUpdated }) => {
         setCommentDeleted(true);
         handleDeleteModal();
         setCommnetToDeleteId(null);
+        setSuccesDeleteMessage(true);
+        handleMessages();
       })
       .catch((err) => {
         console.error(err);
       });
+
+    setTimeout(() => {
+      setSuccesDeleteMessage(false);
+    }, 2500);
   };
 
   useEffect(() => {

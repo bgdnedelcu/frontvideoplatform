@@ -1,7 +1,14 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import ClientUser from "../service/clientUser";
 
-const EditPlaylist = ({ handleModal, show, playlistId, triggerRerender }) => {
+const EditPlaylist = ({
+  handleModal,
+  show,
+  playlistId,
+  triggerRerender,
+  setSuccesMessage,
+  handleMessages,
+}) => {
   let titleInput;
 
   const setTitle = (text) => {
@@ -15,10 +22,15 @@ const EditPlaylist = ({ handleModal, show, playlistId, triggerRerender }) => {
     ClientUser.editPlaylist(formData, playlistId)
       .then(() => {
         triggerRerender();
+        setSuccesMessage(true);
+        handleMessages();
       })
       .catch((err) => {
         console.error(err);
       });
+    setTimeout(() => {
+      setSuccesMessage(false);
+    }, 2500);
   };
 
   return (
