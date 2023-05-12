@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { Alert } from "react-bootstrap";
 import IncompletsFieldsError from "./IncompletsFieldsError";
 import ClientUser from "../service/clientUser";
+import CustomAlert from "./CustomAlert";
 
 const Register = () => {
   const [emailInput, setEmail] = useState("");
@@ -17,6 +18,11 @@ const Register = () => {
 
     if (emailInput === "" || passwordInput === "" || channelNameInput === "") {
       setFieldsIncomplete(true);
+      setError(false);
+      setSuccesMessage(false);
+      setTimeout(() => {
+        setFieldsIncomplete(false);
+      }, 2500);
       return;
     }
 
@@ -33,45 +39,22 @@ const Register = () => {
         setError(false);
         setFieldsIncomplete(false);
         setSuccesMessage(true);
+        setTimeout(() => {
+          setSuccesMessage(false);
+        }, 2500);
       })
       .catch((error) => {
         console.error(error);
         if (error.response.data === "Account already exists!") {
           setError(true);
-        } else {
-          setFieldsIncomplete(true);
+          setSuccesMessage(false);
+          setFieldsIncomplete(false);
+          setTimeout(() => {
+            setError(false);
+          }, 2500);
         }
-        setSuccesMessage(false);
       });
   };
-
-  useEffect(() => {
-    let successMessageTimer, errorTimer, fieldsIncompleteTimer;
-
-    if (successMessage) {
-      successMessageTimer = setTimeout(() => {
-        setSuccesMessage(false);
-      }, 5000);
-    }
-
-    if (error) {
-      errorTimer = setTimeout(() => {
-        setError(false);
-      }, 5000);
-    }
-
-    if (fieldsIncomplete) {
-      fieldsIncompleteTimer = setTimeout(() => {
-        setFieldsIncomplete(false);
-      }, 5000);
-    }
-
-    return () => {
-      clearTimeout(successMessageTimer);
-      clearTimeout(errorTimer);
-      clearTimeout(fieldsIncompleteTimer);
-    };
-  }, [successMessage, error, fieldsIncomplete]);
 
   return (
     <Container fluid className="d-flex align-items-center min-vh-100">
@@ -88,7 +71,6 @@ const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formBasicPassword" className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -98,7 +80,6 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formBasicChannel" className="mb-4">
               <Form.Label>Channel Name</Form.Label>
               <Form.Control
@@ -108,23 +89,28 @@ const Register = () => {
                 onChange={(e) => setChannelName(e.target.value)}
               />
             </Form.Group>
-
             <Button variant="primary" type="submit" className="w-100 mb-3">
               Create Account
             </Button>
           </Form>
           {fieldsIncomplete && <IncompletsFieldsError />}
-          {error && <Alert variant="danger">Account already exists!</Alert>}
+          {error && (
+            <CustomAlert
+              variant={"danger"}
+              message={"Account already exists!"}
+            />
+          )}
           {successMessage && (
-            <Alert variant="success" className="mt-3">
-              Account created successfully! You will receive a validation email.
-            </Alert>
+            <CustomAlert
+              className={"mt-3"}
+              variant={"success"}
+              message={
+                "Account created successfully! You will receive a validation email."
+              }
+            />
           )}
           <p className="text-center">
-            Already have an account?{" "}
-            <a href="/login" className="link-primary">
-              Log in here
-            </a>
+            <Link to="/login">Already have an account?</Link>
           </p>
         </Col>
       </Row>

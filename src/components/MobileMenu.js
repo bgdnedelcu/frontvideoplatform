@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Logout from "./Logout";
 import JwtService from "../service/jwtservice";
+import ClientUser from "../service/clientUser";
 
 const MobileMenu = () => {
   const [show, setShow] = useState(false);
@@ -27,6 +28,17 @@ const MobileMenu = () => {
     window.location.reload();
   };
 
+  const goToPersonalChannel = () => {
+    ClientUser.getChannelName()
+      .then((response) => {
+        navigate(`/channel/${response.data}`);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const handleModal = () => setShow(!show);
 
   useEffect(() => {
@@ -39,7 +51,6 @@ const MobileMenu = () => {
       <Button variant="outline-primary" className="me-3" onClick={handleModal}>
         <FontAwesomeIcon icon={faBars} />
       </Button>
-
       <Modal show={show} onHide={handleModal}>
         <Modal.Header closeButton>
           <Modal.Title>Menu</Modal.Title>
@@ -57,6 +68,9 @@ const MobileMenu = () => {
             </Button>
             <Button variant="success" onClick={goToUpload}>
               Upload new video
+            </Button>
+            <Button variant="success" onClick={goToPersonalChannel}>
+              Your channel
             </Button>
             <Button variant="secondary" onClick={goToPlaylists}>
               PlayLists

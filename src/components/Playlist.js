@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Table,
-  Modal,
-  Alert,
-} from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Alert } from "react-bootstrap";
 import Header from "./Header";
 import CreatePlaylist from "./CreatePlaylist";
 import EditPlaylist from "./EditPlaylist";
 import ClientUser from "../service/clientUser";
 import ClientVideo from "../service/clientVideo";
+import CustomModal from "./CustomModal";
+import CustomAlert from "./CustomAlert";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);
@@ -94,6 +88,9 @@ const Playlist = () => {
     }, 2500);
   };
 
+  const classNameForAlert = "alertUser fixed-bottom alert-success";
+  const variantForAlert = "success";
+
   const goToVideos = (playlistId) => {
     const videoPath = "/playlist/".concat(playlistId);
     navigate(videoPath, { state: { playlistId } });
@@ -106,29 +103,13 @@ const Playlist = () => {
   return (
     <>
       <Header />
-      <CreatePlaylist
-        show={showCreatePlaylistModal}
-        handleModal={handleToggleCreatePlaylistModal}
-        triggerRerender={triggerRerenderPlaylists}
-        succesMessage={succesAdded}
-        setSuccesMessage={setSuccesAdded}
-        handleMessages={handleMessagesForCreate}
-      />
-      <EditPlaylist
-        show={showEditPlaylistModal}
-        handleModal={handleToggleEditPlaylistModal}
-        playlistId={playlistIdToEdit}
-        triggerRerender={triggerRerenderPlaylists}
-        setSuccesMessage={setSuccesEdit}
-        handleMessages={handleMessagesForEdit}
-      />
+
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
           <Col sm={4}>
             <h1>Your Playlists</h1>
           </Col>
         </Row>
-
         <Row>
           <Col>
             <Table striped bordered hover variant="dark">
@@ -151,7 +132,6 @@ const Playlist = () => {
                     </Button>
                   </td>
                 </tr>
-
                 {playlists.map((playlist, key) => (
                   <tr key={playlist.id}>
                     <td>{playlist.title}</td>
@@ -190,58 +170,56 @@ const Playlist = () => {
             </Table>
           </Col>
         </Row>
+        <CreatePlaylist
+          show={showCreatePlaylistModal}
+          handleModal={handleToggleCreatePlaylistModal}
+          triggerRerender={triggerRerenderPlaylists}
+          succesMessage={succesAdded}
+          setSuccesMessage={setSuccesAdded}
+          handleMessages={handleMessagesForCreate}
+        />
+        <EditPlaylist
+          show={showEditPlaylistModal}
+          handleModal={handleToggleEditPlaylistModal}
+          playlistId={playlistIdToEdit}
+          triggerRerender={triggerRerenderPlaylists}
+          setSuccesMessage={setSuccesEdit}
+          handleMessages={handleMessagesForEdit}
+        />
+        <CustomModal
+          show={showDeletePlaylistModal}
+          onHide={handleToggleDeleteModal}
+          title={"Confirm delete"}
+          body={"Are you sure you want to delete the playlist?"}
+          onClick={handleToggleDeleteModal}
+          variant={"danger"}
+          onClickConfirm={() => {
+            deletePlaylist(playlistToDeleteId);
+          }}
+          buttonMessage={"Delete"}
+        />
         {succesDelete && (
-          <div>
-            <Alert
-              className="alertUser fixed-bottom alert-success"
-              variant="success"
-            >
-              The playlist has been deleted!
-            </Alert>
-          </div>
+          <CustomAlert
+            className={classNameForAlert}
+            variant={variantForAlert}
+            message={"The playlist has been deleted!"}
+          />
         )}
         {succesAdded && (
-          <div>
-            <Alert
-              className="alertUser fixed-bottom alert-success"
-              variant="success"
-            >
-              New playlist has been created!
-            </Alert>
-          </div>
+          <CustomAlert
+            className={classNameForAlert}
+            variant={variantForAlert}
+            message={" New playlist has been created!"}
+          />
         )}
         {succesEdit && (
-          <div>
-            <Alert
-              className="alertUser fixed-bottom alert-success"
-              variant="success"
-            >
-              The playlist name has been changed!
-            </Alert>
-          </div>
+          <CustomAlert
+            className={classNameForAlert}
+            variant={variantForAlert}
+            message={"The playlist name has been changed!"}
+          />
         )}
       </Container>
-
-      <Modal show={showDeletePlaylistModal} onHide={handleToggleDeleteModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete the playlist?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleToggleDeleteModal}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              console.log(playlistToDeleteId);
-              deletePlaylist(playlistToDeleteId);
-            }}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Table,
-  Modal,
-  Alert,
-} from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Alert } from "react-bootstrap";
 import Header from "./Header";
 import NotFound from "./NotFound";
 import ClientVideo from "../service/clientVideo";
 import ClientUser from "../service/clientUser";
+import CustomModal from "./CustomModal";
 
 const VideosFromPlayList = () => {
   const [videos, setVideos] = useState([]);
@@ -111,7 +104,6 @@ const VideosFromPlayList = () => {
               </h2>
             </Col>
           </Row>
-
           <Row>
             <Col>
               <Table striped bordered hover variant="dark">
@@ -155,6 +147,16 @@ const VideosFromPlayList = () => {
               </Table>
             </Col>
           </Row>
+          <CustomModal
+            show={showDeleteModal}
+            onHide={handleShowModal}
+            title={"Confirm delete"}
+            body={"Are you sure you want to delete this video from playlist?"}
+            onClick={handleShowModal}
+            variant={"danger"}
+            onClickConfirm={() => deleteVideo(videoToDeleteId)}
+            buttonMessage={"Delete"}
+          />
           {succesDelete && (
             <div>
               <Alert
@@ -168,23 +170,6 @@ const VideosFromPlayList = () => {
         </Container>
       )}
       {errorStatus && <NotFound />}
-
-      <Modal show={showDeleteModal} onHide={handleShowModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this video from playlist?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleShowModal}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={() => deleteVideo(videoToDeleteId)}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

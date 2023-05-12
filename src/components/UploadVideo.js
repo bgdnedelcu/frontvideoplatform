@@ -83,7 +83,6 @@ const UploadVideo = () => {
               onChange={handleTitleChange}
             />
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formVideoDescription">
             <Form.Label>Video Description</Form.Label>
             <Form.Control
@@ -94,12 +93,10 @@ const UploadVideo = () => {
               onChange={handleDescriptionChange}
             />
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="formVideoFile">
             <Form.Label>Select Video File</Form.Label>
             <Form.Control type="file" onChange={handleFileSelect} />
           </Form.Group>
-
           <Button variant="primary" type="submit">
             Upload
           </Button>

@@ -200,6 +200,17 @@ const getVideoDetailsForNonUsers = async (videoId) => {
   }
 };
 
+const getVideosForChannel = async (channelName) => {
+  try {
+    return await axios.get(
+      `${VIDEO_MS_URL}/videosForChannel/${channelName}`,
+      defaultConfig
+    );
+  } catch (e) {
+    throw e;
+  }
+};
+
 const ClientVideo = {
   VIDEO_MS_URL,
   defaultConfig,
@@ -220,6 +231,7 @@ const ClientVideo = {
   deleteVideoById,
   checkIfVideoExists,
   getVideoDetailsForNonUsers,
+  getVideosForChannel,
 };
 
 export default ClientVideo;

@@ -51,11 +51,7 @@ const EditAccount = () => {
     <>
       <Header />
       <Container className="editAccount-container">
-        <Form
-          //   onSubmit={handleSubmit}
-          className="mx-auto mt-5"
-          style={{ maxWidth: "500px" }}
-        >
+        <Form className="mx-auto mt-5" style={{ maxWidth: "500px" }}>
           <Form.Group className="mb-3" controlId="channel">
             <Form.Label>Channel Name</Form.Label>
             <Form.Control
@@ -73,7 +69,6 @@ const EditAccount = () => {
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="newPassword">
             <Form.Label>New password</Form.Label>
             <Form.Control
@@ -82,7 +77,6 @@ const EditAccount = () => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </Form.Group>
-
           <Button variant="primary" type="button" onClick={submitChanges}>
             Save
           </Button>

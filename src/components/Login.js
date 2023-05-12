@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
 import IncompletsFieldsError from "./IncompletsFieldsError";
@@ -83,7 +83,6 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formBasicPassword" className="mb-4">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -107,10 +106,7 @@ const Login = () => {
           {error && <Alert variant="danger">Invalid email or password</Alert>}
           {fieldsIncomplete && <IncompletsFieldsError />}
           <p className="text-center">
-            Don't have an account?{" "}
-            <a href="/register" className="link-primary">
-              Sign up here
-            </a>
+            <Link to="/register"> Don't have an account? Sign up here</Link>
           </p>
         </Col>
       </Row>

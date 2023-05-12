@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
 import ClientVideo from "../service/clientVideo";
+import CustomModal from "./CustomModal";
 
 const Comments = ({
   videoId,
@@ -116,25 +117,18 @@ const Comments = ({
           ))}
         </div>
       )}
-      <Modal show={showDeleteModal} onHide={handleDeleteModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this comment?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteModal}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              deleteComment(commnetToDeleteId);
-            }}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <CustomModal
+        show={showDeleteModal}
+        onHide={handleDeleteModal}
+        title={"Confirm delete"}
+        body={"Are you sure you want to delete this comment?"}
+        onClick={handleDeleteModal}
+        variant={"danger"}
+        onClickConfirm={() => {
+          deleteComment(commnetToDeleteId);
+        }}
+        buttonMessage={"Delete"}
+      />
     </>
   );
 };

@@ -23,6 +23,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route
             path="/"
             element={
@@ -31,6 +32,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/home"
             element={
@@ -49,10 +51,6 @@ function App() {
             }
           />
 
-          <Route path="/play" element={<VideoPage />}>
-            <Route path=":videoId" element={<VideoPage />} />
-          </Route>
-
           <Route
             path="/upload"
             element={
@@ -61,6 +59,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/playlists"
             element={
@@ -69,6 +68,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/playlist"
             element={
@@ -92,14 +92,21 @@ function App() {
             <Route path=":searchText" element={<Home />} />
           </Route>
 
-          <Route
-            path="/channel/:channelName"
-            element={
-              <ProtectedRoute user={user}>
-                <Channel />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/play" element={<VideoPage />}>
+            <Route path=":videoId" element={<VideoPage />} />
+          </Route>
+
+          <Route path="channel">
+            <Route path="" element={<NotFound />} />
+            <Route
+              path=":channelName"
+              element={
+                <ProtectedRoute user={user}>
+                  <Channel />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Routes>
       </Router>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import CustomModal from "./CustomModal";
 
 const Logout = () => {
   const [show, setShow] = useState(false);
@@ -16,23 +17,19 @@ const Logout = () => {
 
   return (
     <>
-      <Button variant="outline-primary" className="me-3" onClick={handleModal}>
+      <Button variant="outline-primary" className="me-0" onClick={handleModal}>
         Logout
       </Button>
-      <Modal show={show} onHide={handleModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Logout</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to logout?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={actionLogout}>
-            Logout
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <CustomModal
+        show={show}
+        onHide={handleModal}
+        title={"Confirm Logout"}
+        body={"Are you sure you want to logout?"}
+        onClick={handleModal}
+        variant={"primary"}
+        onClickConfirm={actionLogout}
+        buttonMessage={"Logout"}
+      />
     </>
   );
 };

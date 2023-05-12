@@ -9,13 +9,13 @@ import {
   Table,
   Dropdown,
   ButtonGroup,
-  Modal,
-  Alert,
 } from "react-bootstrap";
 import Header from "./Header";
 import JwtService from "../service/jwtservice";
 import ClientVideo from "../service/clientVideo";
 import ClientUser from "../service/clientUser";
+import CustomModal from "./CustomModal";
+import CustomAlert from "./CustomAlert";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
@@ -59,6 +59,7 @@ const Home = () => {
     if (hasMoreVideos) {
       ClientVideo.loadVideosForHome(baseUrl, config)
         .then((response) => {
+          console.log(response.data);
           const newVideos = response.data;
           setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
@@ -106,22 +107,20 @@ const Home = () => {
       .then(() => {
         setSuccesMessage(true);
         setError(false);
+        setTimeout(() => {
+          setSuccesMessage(false);
+        }, 2500);
       })
       .catch((err) => {
         if (err.response.status === 400) {
           setError(true);
           setSuccesMessage(false);
+          setTimeout(() => {
+            setError(false);
+          }, 2500);
         }
         console.error(err);
       });
-
-    setTimeout(() => {
-      setError(false);
-    }, 5000);
-
-    setTimeout(() => {
-      setSuccesMessage(false);
-    }, 5000);
   };
 
   const deleteVideo = (videoIdToDelete) => {
@@ -239,25 +238,32 @@ const Home = () => {
               </Table>
             </Col>
           </Row>
+          <CustomModal
+            show={showDeleteModal}
+            onHide={handleDeleteModal}
+            title={"Confirm delete"}
+            body={"Are you sure you want to delete this video?"}
+            onClick={handleDeleteModal}
+            variant={"danger"}
+            onClickConfirm={() => {
+              deleteVideo(videoIdToDelete);
+              handleDeleteModal();
+            }}
+            buttonMessage={"Delete"}
+          />
           {succesMessage && (
-            <div>
-              <Alert
-                className="alertUser fixed-bottom alert-success"
-                variant="success"
-              >
-                The video has been successfully added to the playlist!
-              </Alert>
-            </div>
+            <CustomAlert
+              className={"alertUser fixed-bottom alert-success"}
+              variant={"success"}
+              message={"The video has been successfully added to the playlist!"}
+            />
           )}
           {errorVideoAlreadyInPlaylist && (
-            <div>
-              <Alert
-                className="alertUser fixed-bottom alert-danger"
-                variant="danger"
-              >
-                The video is already in this playlist!
-              </Alert>
-            </div>
+            <CustomAlert
+              className={"alertUser fixed-bottom alert-danger"}
+              variant={"danger"}
+              message={"The video is already in this playlist!"}
+            />
           )}
         </Container>
       ) : (
@@ -273,27 +279,6 @@ const Home = () => {
           </div>
         </Container>
       )}
-
-      <Modal show={showDeleteModal} onHide={handleDeleteModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this video?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteModal}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              deleteVideo(videoIdToDelete);
-              handleDeleteModal();
-            }}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

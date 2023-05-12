@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Row,
@@ -8,30 +8,74 @@ import {
   Table,
   Dropdown,
   ButtonGroup,
-  Alert,
 } from "react-bootstrap";
 import Header from "./Header";
 import ClientUser from "../service/clientUser";
 import ClientVideo from "../service/clientVideo";
+import JwtService from "../service/jwtservice";
+import CustomAlert from "./CustomAlert";
+import CustomModal from "./CustomModal";
 
 const Channel = () => {
   const [videos, setVideos] = useState([]);
   const [playListSet, setPlayListSet] = useState([]);
-  const [succesMessage, setSuccesMessage] = useState(false);
+  const [succesAdded, setSuccesAdded] = useState(false);
+  const [error, setError] = useState(false);
+  const [succesDeleted, setSuccesDeleted] = useState(false);
   const [channel, setChannel] = useState(null);
+  const [userRole, setUserRole] = useState(undefined);
+  const [userId, setUserId] = useState(null);
+  const [videoIdToDelete, setVideoIdToDelete] = useState(undefined);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
-  const loc = useLocation();
-  const channelVideo = loc.state.channelVideo;
+  const { channelName } = useParams();
+
+  const handleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+
+  const deleteVideo = (videoIdToDelete) => {
+    const videoId = videoIdToDelete;
+    ClientVideo.deleteVideoById(videoId)
+      .then(() => {
+        setVideos((prevVideos) =>
+          prevVideos.filter((video) => video.videoId !== videoId)
+        );
+        setSuccesDeleted(true);
+        setSuccesAdded(false);
+        setError(false);
+        setTimeout(() => {
+          setSuccesDeleted(false);
+        }, 2500);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
-    setChannel(channelVideo);
+    setChannel(channelName);
   }, []);
 
   useEffect(() => {
+    const userRole = JwtService.getRole();
+    setUserRole(userRole);
     getPlayListSet();
-    getSongsFromChannel();
-  }, [channel]);
+    getVideosFromChannel();
+    getUserId();
+  }, [channel, videoIdToDelete]);
+
+  const getUserId = () => {
+    if (JwtService.checkJwt()) {
+      ClientVideo.getLogUserId()
+        .then((response) => {
+          setUserId(response.data);
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  };
 
   const getPlayListSet = () => {
     if (channel) {
@@ -45,11 +89,12 @@ const Channel = () => {
     }
   };
 
-  const getSongsFromChannel = () => {
+  const getVideosFromChannel = () => {
     if (channel) {
-      ClientVideo.getVideosByChannelName(channel)
+      ClientVideo.getVideosForChannel(channel)
         .then((response) => {
           setVideos(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.error(error);
@@ -70,15 +115,24 @@ const Channel = () => {
 
     ClientVideo.insertToPlaylist(body)
       .then(() => {
-        setSuccesMessage(true);
+        setSuccesAdded(true);
+        setError(false);
+        setSuccesDeleted(false);
+        setTimeout(() => {
+          setSuccesAdded(false);
+        }, 2500);
       })
       .catch((err) => {
+        if (err.response.status === 400) {
+          setError(true);
+          setSuccesAdded(false);
+          setShowDeleteModal(false);
+          setTimeout(() => {
+            setError(false);
+          }, 2500);
+        }
         console.error(err);
       });
-
-    setTimeout(() => {
-      setSuccesMessage(false);
-    }, 1000);
   };
 
   const play = (e) => {
@@ -87,88 +141,133 @@ const Channel = () => {
     navigate(videoPath, { state: { videoId } });
   };
 
+  const handleLinkClick = () => {
+    window.location.reload();
+  };
+
   return (
     <>
       <Header />
       <Container className="videosTable">
         <Row className="justify-content-md-center">
           <Col>
-            <h2
+            <a
+              href={`/channel/${channelName}`}
+              className="channelTitle"
               style={{
                 display: "inline-block",
                 textAlign: "center",
                 width: "100%",
               }}
+              onClick={handleLinkClick}
             >
-              {channel}`s channel
-            </h2>
-          </Col>
-        </Row>
-
-        <Row className="justify-content-md-center">
-          <Col sm={4}>
-            {succesMessage && (
-              <>
-                <Alert variant={"success"} className="customPlayer">
-                  Successfully added to the playlist!
-                </Alert>
-              </>
-            )}
+              {channelName}
+            </a>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Channel</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {videos.map((video, key) => {
-                  return (
-                    <tr key={video.videoId}>
-                      <td>{video.videoTitle}</td>
-                      <td>{video.videoChannel}</td>
-                      <td>
-                        <Button
-                          style={{ marginRight: "10px" }}
-                          value={video.videoId}
-                          onClick={play}
-                        >
-                          Go to video
-                        </Button>
-                        <Dropdown as={ButtonGroup}>
-                          <Dropdown.Toggle
-                            variant="primary"
-                            id="dropdown-basic"
+            <div className="table-responsive">
+              <Table
+                striped
+                bordered
+                hover
+                variant="dark"
+                style={{ tableLayout: "fixed" }}
+              >
+                <thead>
+                  <tr>
+                    <th style={{ width: "50%" }}>Title</th>
+                    <th style={{ width: "50%" }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {videos.map((video, key) => {
+                    return (
+                      <tr key={video.videoId}>
+                        <td>{video.videoTitle}</td>
+                        <td>
+                          <Button
+                            style={{ marginRight: "10px" }}
+                            value={video.videoId}
+                            onClick={play}
                           >
-                            Add in playlist
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {playListSet.map((playList, key) => {
-                              return (
-                                <Dropdown.Item
-                                  key={playList.id}
-                                  data-id={playList.id + " " + video.videoId}
-                                  onClick={addToPlaylist.bind(this)}
-                                >
-                                  {playList.title}
-                                </Dropdown.Item>
-                              );
-                            })}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+                            Go to video
+                          </Button>
+                          <Dropdown as={ButtonGroup}>
+                            <Dropdown.Toggle
+                              variant="primary"
+                              id="dropdown-basic"
+                            >
+                              Add in playlist
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              {playListSet.map((playList, key) => {
+                                return (
+                                  <Dropdown.Item
+                                    key={playList.id}
+                                    data-id={playList.id + " " + video.videoId}
+                                    onClick={addToPlaylist.bind(this)}
+                                  >
+                                    {playList.title}
+                                  </Dropdown.Item>
+                                );
+                              })}
+                            </Dropdown.Menu>
+                          </Dropdown>
+                          {(video.userId === userId ||
+                            userRole === "admin") && (
+                            <Button
+                              style={{ marginLeft: "10px" }}
+                              variant="danger"
+                              onClick={() => {
+                                handleDeleteModal();
+                                setVideoIdToDelete(video.videoId);
+                              }}
+                            >
+                              Delete video{" "}
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
           </Col>
         </Row>
+        <CustomModal
+          show={showDeleteModal}
+          onHide={handleDeleteModal}
+          title={"Confirm delete"}
+          body={"Are you sure you want to delete this video?"}
+          onClick={handleDeleteModal}
+          variant={"danger"}
+          onClickConfirm={() => {
+            deleteVideo(videoIdToDelete);
+            handleDeleteModal();
+          }}
+          buttonMessage={"Delete"}
+        />
+        {succesAdded && (
+          <CustomAlert
+            className={"alertUser fixed-bottom alert-success"}
+            message={"The video has been successfully added to the playlist!"}
+          />
+        )}
+        {error && (
+          <CustomAlert
+            className={"alertUser fixed-bottom alert-danger"}
+            message={"The video is already in this playlist!"}
+          />
+        )}
+        {succesDeleted && (
+          <CustomAlert
+            className={"alertUser fixed-bottom alert-success"}
+            message={"The video has been deleted!"}
+          />
+        )}
       </Container>
     </>
   );

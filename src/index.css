@@ -132,7 +132,13 @@ body {
   text-decoration: none;
 }
 
-.linkToChannel:hover {
+.channelTitle {
+  font-size: 35px;
+  text-decoration: none;
+}
+
+.linkToChannel:hover,
+.channelTitle:hover {
   color: aliceblue
 }
 
