@@ -112,11 +112,17 @@ const Playlist = () => {
         </Row>
         <Row>
           <Col>
-            <Table striped bordered hover variant="dark">
+            <Table
+              striped
+              bordered
+              hover
+              variant="dark"
+              style={{ tableLayout: "fixed" }}
+            >
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Actions</th>
+                  <th style={{ width: "50%" }}>Title</th>
+                  <th style={{ width: "50%" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>

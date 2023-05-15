@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ClientVideo from "../service/clientVideo";
+import { Form, Button, Row, Col } from "react-bootstrap";
 
 const AddComment = ({
   idVideo,
@@ -8,13 +9,27 @@ const AddComment = ({
   handleMessages,
 }) => {
   const [content, setContent] = useState("");
+  const [commentError, setCommentError] = useState(false);
+  const [lengthError, setLengtError] = useState(false);
 
   const saveComment = (event) => {
     event.preventDefault();
+    if (!content.trim()) {
+      setCommentError(true);
+      return;
+    }
+
+    if (content.length > 600) {
+      setLengtError(true);
+      return;
+    }
+
     ClientVideo.addComment(content, idVideo)
       .then(() => {
         onCommentAdded();
         setSuccesCommentAdded(true);
+        setCommentError(false);
+        setLengtError(false);
         handleMessages();
       })
       .catch((error) => {
@@ -29,29 +44,48 @@ const AddComment = ({
 
   const changeContent = (event) => {
     setContent(event.target.value);
+    setCommentError(false);
+    if (content.length <= 600) {
+      setLengtError(false);
+    }
   };
 
   return (
-    <form onSubmit={saveComment} className="mb-3">
-      <div className="row">
-        <div className="col-md-8">
-          <div className="form-floating">
-            <textarea
-              className="form-control"
-              placeholder="Adaugă un comentariu"
+    <Form onSubmit={saveComment} className="mb-3">
+      <Row>
+        <Col md={10}>
+          <Form.Group className="mb-3">
+            <Form.Control
+              as="textarea"
+              className={
+                commentError
+                  ? "is-invalid"
+                  : "" || (lengthError && "is-invalid")
+              }
+              placeholder="Add a comment"
               id="commentContent"
               value={content}
               onChange={changeContent}
-            ></textarea>
-          </div>
-        </div>
-        <div className="col-md-4 d-flex align-items-end justify-content-start">
-          <button className="btn btn-primary" type="submit">
+            />
+            {commentError && (
+              <Form.Control.Feedback type="invalid">
+                The comment cannot be empty.
+              </Form.Control.Feedback>
+            )}
+            {lengthError && (
+              <Form.Control.Feedback type="invalid">
+                Content too long
+              </Form.Control.Feedback>
+            )}
+          </Form.Group>
+        </Col>
+        <Col md={3} className="d-flex align-items-end justify-content-start">
+          <Button variant="primary" type="submit">
             Add Comment
-          </button>
-        </div>
-      </div>
-    </form>
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

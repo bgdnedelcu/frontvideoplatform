@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Container,
   Row,
@@ -7,8 +7,9 @@ import {
   Button,
   Dropdown,
   ButtonGroup,
-  Alert,
 } from "react-bootstrap";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 import Header from "./Header";
 import AddComment from "./AddComment";
 import Comments from "./Comments";
@@ -16,6 +17,7 @@ import NotFound from "./NotFound";
 import JwtService from "../service/jwtservice";
 import ClientVideo from "../service/clientVideo";
 import ClientUser from "../service/clientUser";
+import CustomAlert from "./CustomAlert";
 
 const VideoPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
@@ -33,8 +35,10 @@ const VideoPage = () => {
   const [succesDeleteComment, setSuccesDeleteComment] = useState(false);
   const [succesAddComment, setSuccesCommentAdded] = useState(false);
   const [errorVideoAlreadyInPlaylist, setError] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { videoId } = useParams();
+  const navigate = useNavigate();
 
   const createVideoUrl = () => {
     ClientVideo.checkIfVideoExists(videoId)
@@ -47,7 +51,10 @@ const VideoPage = () => {
         setVideoNotFound(true);
         console.error(error);
       });
+    console.log("Call");
   };
+
+  console.log("re-render");
 
   const handleCommentAdded = () => {
     setCommentsUpdated(commentsUpdated + 1);
@@ -77,6 +84,7 @@ const VideoPage = () => {
           console.error(error);
         });
     }
+    console.log("call2");
   };
 
   const addLike = () => {
@@ -115,6 +123,7 @@ const VideoPage = () => {
           console.error(error);
         });
     }
+    console.log("call5");
   };
 
   const loadCommenter = () => {
@@ -127,6 +136,7 @@ const VideoPage = () => {
           console.error(error);
         });
     }
+    console.log("call6");
   };
 
   const addToPlaylist = (e) => {
@@ -176,7 +186,16 @@ const VideoPage = () => {
     setSuccesCommentAdded(false);
   };
 
+  const alertClassName = "alertUser fixed-bottom alert-success";
+  const alertVariant = "success";
+
+  const goToLogin = () => {
+    navigate("/login");
+    window.location.reload();
+  };
+
   useEffect(() => {
+    if (!JwtService.checkJwt()) setIsOpen(true);
     createVideoUrl();
     loadCommenter();
     loadVideoDetails();
@@ -189,6 +208,26 @@ const VideoPage = () => {
         <>
           {JwtService.checkJwt() && <Header />}
           <Container fluid className="videoPage">
+            <Popup
+              className="pop"
+              open={isOpen}
+              position="center"
+              contentStyle={{ width: "600px" }}
+              closeOnDocumentClick={false}
+            >
+              <div className="popupContent">
+                <h1>Get the full app experience</h1>
+                <p>Enjoy more videos and great features on the app</p>
+                <Button onClick={goToLogin}>Login</Button>
+              </div>
+              <Link
+                className="d-flex justify-content-end"
+                style={{ color: "grey" }}
+                onClick={() => setIsOpen(false)}
+              >
+                Close
+              </Link>
+            </Popup>
             <Row>
               <Col>
                 <div className="embed-responsive embed-responsive-16by9">
@@ -318,44 +357,34 @@ const VideoPage = () => {
               </Col>
             </Row>
             {succesAddToPlaylist && (
-              <div>
-                <Alert
-                  className="alertUser fixed-bottom alert-success"
-                  variant="success"
-                >
-                  The video has been successfully added to the playlist!
-                </Alert>
-              </div>
-            )}
-            {errorVideoAlreadyInPlaylist && (
-              <div>
-                <Alert
-                  className="alertUser fixed-bottom alert-danger"
-                  variant="danger"
-                >
-                  The video is already in this playlist!
-                </Alert>
-              </div>
+              <CustomAlert
+                className={alertClassName}
+                variant={alertVariant}
+                message={
+                  "The video has been successfully added to the playlist!"
+                }
+              />
             )}
             {succesDeleteComment && (
-              <div>
-                <Alert
-                  className="alertUser fixed-bottom alert-success"
-                  variant="success"
-                >
-                  The comment has been deleted!
-                </Alert>
-              </div>
+              <CustomAlert
+                className={alertClassName}
+                variant={alertVariant}
+                message={"The comment has been deleted!"}
+              />
             )}
             {succesAddComment && (
-              <div>
-                <Alert
-                  className="alertUser fixed-bottom alert-success"
-                  variant="success"
-                >
-                  Comment added!
-                </Alert>
-              </div>
+              <CustomAlert
+                className={alertClassName}
+                variant={alertVariant}
+                message={"Comment added!"}
+              />
+            )}
+            {errorVideoAlreadyInPlaylist && (
+              <CustomAlert
+                className={"alertUser fixed-bottom alert-danger"}
+                variant={"danger"}
+                message={"The video is already in this playlist!"}
+              />
             )}
           </Container>
         </>

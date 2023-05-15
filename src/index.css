@@ -197,3 +197,19 @@ body {
   margin: 0 auto;
   font-size: 20px;
 }
+
+.popup {
+  width: 300px;
+}
+
+.popupContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.btn.navbar-brand:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background-color: #f8f9fa;
+}

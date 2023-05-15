@@ -22,7 +22,9 @@ const Header = () => {
   return (
     <Navbar bg="light" variant="light" fixed="top">
       <Container className="header">
-        <Navbar.Brand onClick={goToHome}>Eagle</Navbar.Brand>
+        <Navbar.Brand onClick={goToHome} className="btn navbar-brand">
+          Eagle
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Form
