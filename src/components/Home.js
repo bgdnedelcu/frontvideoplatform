@@ -131,7 +131,7 @@ const Home = () => {
 
   const handleScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop === //sau >=
+      window.innerHeight + document.documentElement.scrollTop === 
       document.documentElement.offsetHeight
     ) {
       setPage((prevPage) => prevPage + 1);

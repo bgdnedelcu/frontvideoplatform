@@ -50,10 +50,6 @@ body {
 }
 
 
-/* .like-button {
-  padding-right: 50px;
-} */
-
 .videoDescription {
   height: auto;
 }
@@ -71,8 +67,6 @@ body {
 .showMore button {
   color: red
 }
-
-/* HomeComponent */
 
 .videosTable,
 .playlistTable,
@@ -143,9 +137,6 @@ body {
 }
 
 .upload-container {
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
   margin: 100px auto;
   width: 300px;
   background: black;
@@ -179,14 +170,9 @@ body {
 .editAccount-container {
   margin: 100px auto;
   width: 300px;
-  /* background: black; */
   opacity: 0.9;
   min-height: 100%;
   padding: 20px;
-  /* border-radius: 25px;
-  border-style: solid;
-  border-width: 5px;
-  border-color: black; */
 }
 
 .alertUser {
