@@ -39,7 +39,6 @@ const Home = () => {
     const videoId = e.target.value;
     const videoPath = "/play/".concat(videoId);
     navigate(videoPath, { state: { videoId } });
-    console.log(videoPath);
   };
 
   const loadVideos = () => {
@@ -55,31 +54,25 @@ const Home = () => {
     } else {
       baseUrl = baseUrl.concat("/search/").concat(searchText);
     }
-    console.log(hasMoreVideos);
     if (hasMoreVideos) {
       ClientVideo.loadVideosForHome(baseUrl, config)
         .then((response) => {
-          console.log(response.data);
           const newVideos = response.data;
           setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
           if (baseUrl.includes("search") && response.data.length === 0) {
             setNoResults(true);
           }
-          console.log(response.data.length);
+
           if (response.data.length === 0) {
             setHasMoreVideos(false);
             return;
           }
-
-          console.log(response.data);
         })
         .catch((err) => {
           console.error(err);
         });
     }
-
-    console.log(page);
   };
 
   const getPlayListSet = () => {

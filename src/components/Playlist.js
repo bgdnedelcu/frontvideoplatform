@@ -33,7 +33,6 @@ const Playlist = () => {
 
   const triggerRerenderPlaylists = () => {
     setActionRerender((prevActionRerender) => prevActionRerender + 1);
-    console.log(actionRerender);
   };
 
   const handleMessagesForEdit = () => {

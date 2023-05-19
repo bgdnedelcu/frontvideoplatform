@@ -8,9 +8,8 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const submitSearch = (e) => {
+  const submitSearch = () => {
     const videoPath = `/search/${searchText}`;
-    console.log(videoPath);
     navigate(videoPath);
   };
 

@@ -51,10 +51,7 @@ const VideoPage = () => {
         setVideoNotFound(true);
         console.error(error);
       });
-    console.log("Call");
   };
-
-  console.log("re-render");
 
   const handleCommentAdded = () => {
     setCommentsUpdated(commentsUpdated + 1);
@@ -84,7 +81,6 @@ const VideoPage = () => {
           console.error(error);
         });
     }
-    console.log("call2");
   };
 
   const addLike = () => {
@@ -123,7 +119,6 @@ const VideoPage = () => {
           console.error(error);
         });
     }
-    console.log("call5");
   };
 
   const loadCommenter = () => {
@@ -136,7 +131,6 @@ const VideoPage = () => {
           console.error(error);
         });
     }
-    console.log("call6");
   };
 
   const addToPlaylist = (e) => {

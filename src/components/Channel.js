@@ -69,7 +69,6 @@ const Channel = () => {
       ClientVideo.getLogUserId()
         .then((response) => {
           setUserId(response.data);
-          console.log(response.data);
         })
         .catch((err) => {
           console.error(err);
@@ -94,7 +93,6 @@ const Channel = () => {
       ClientVideo.getVideosForChannel(channel)
         .then((response) => {
           setVideos(response.data);
-          console.log(response.data);
         })
         .catch((error) => {
           console.error(error);
