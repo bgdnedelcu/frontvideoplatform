@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import IncompletsFieldsError from "./IncompletsFieldsError";
 import ClientUser from "../service/clientUser";
 import CustomAlert from "./CustomAlert";
 
@@ -11,20 +10,10 @@ const Register = () => {
   const [channelNameInput, setChannelName] = useState("");
   const [error, setError] = useState(false);
   const [successMessage, setSuccesMessage] = useState(false);
-  const [fieldsIncomplete, setFieldsIncomplete] = useState(false);
+  const [errorChannelName, setErrorChannelName] = useState(false);
 
   const createAccount = (e) => {
     e.preventDefault();
-
-    if (emailInput === "" || passwordInput === "" || channelNameInput === "") {
-      setFieldsIncomplete(true);
-      setError(false);
-      setSuccesMessage(false);
-      setTimeout(() => {
-        setFieldsIncomplete(false);
-      }, 2500);
-      return;
-    }
 
     const accountData = {
       email: emailInput,
@@ -37,27 +26,36 @@ const Register = () => {
         setPassword("");
         setChannelName("");
         setError(false);
-        setFieldsIncomplete(false);
         setSuccesMessage(true);
         setTimeout(() => {
           setSuccesMessage(false);
-        }, 2500);
+        }, 3000);
       })
       .catch((error) => {
         console.error(error);
         if (error.response.data === "Account already exists!") {
           setError(true);
           setSuccesMessage(false);
-          setFieldsIncomplete(false);
           setTimeout(() => {
             setError(false);
-          }, 2500);
+          }, 3000);
+        }
+        if (error.response.data === "Channel name already exists") {
+          setErrorChannelName(true);
+          setError(false);
+          setSuccesMessage(false);
+          setTimeout(() => {
+            setErrorChannelName(false);
+          }, 3000);
         }
       });
   };
 
   return (
-    <Container fluid className="d-flex align-items-center min-vh-100">
+    <Container
+      fluid
+      className="d-flex align-items-center justify-content-center min-vh-100"
+    >
       <Row className="justify-content-center w-100">
         <Col md={6} lg={5} xl={4}>
           <h1 className="mb-4">Create an Account</h1>
@@ -89,15 +87,27 @@ const Register = () => {
                 onChange={(e) => setChannelName(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100 mb-3">
-              Create Account
-            </Button>
+            <div className="d-flex align-items-center justify-content-center">
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!emailInput || !passwordInput || !channelNameInput}
+                className="w-50 mb-3"
+              >
+                Create Account
+              </Button>
+            </div>
           </Form>
-          {fieldsIncomplete && <IncompletsFieldsError />}
           {error && (
             <CustomAlert
               variant={"danger"}
               message={"Account already exists!"}
+            />
+          )}
+          {errorChannelName && (
+            <CustomAlert
+              variant={"danger"}
+              message={"Channel name already exists"}
             />
           )}
           {successMessage && (

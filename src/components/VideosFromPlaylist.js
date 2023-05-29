@@ -15,6 +15,7 @@ const VideosFromPlayList = () => {
   const [playlistTitle, setPlaylistTitle] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
   const [succesDelete, setSuccesDelete] = useState(false);
+  const [noVideosYet, setNoVideos] = useState(false);
 
   const { playlistId } = useParams();
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ const VideosFromPlayList = () => {
       .then((response) => {
         setNumVideosFromPLaylist(response.data.length);
         setVideos(response.data);
+        if (response.data.length === 0) {
+          setNoVideos(true);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -107,43 +111,59 @@ const VideosFromPlayList = () => {
           <Row>
             <Col>
               <Table striped bordered hover variant="dark">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Channel Name</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {videos.map((video, key) => {
-                    return (
-                      <tr key={video.videoId}>
-                        <td>{video.videoTitle}</td>
-                        <td>{video.videoChannel}</td>
-                        <td>
-                          <Button
-                            style={{ marginRight: "10px" }}
-                            value={video.videoId}
-                            onClick={goToVideo}
-                          >
-                            Go to video
-                          </Button>
-                          <Button
-                            variant="danger"
-                            style={{ marginRight: "10px" }}
-                            value={video.videoId}
-                            onClick={() => {
-                              handleShowModal();
-                              setVideoToDeleteId(video.videoId);
-                            }}
-                          >
-                            Delete from playlist
-                          </Button>
-                        </td>
+                {noVideosYet ? (
+                  <p
+                    style={{
+                      display: "inline-block",
+                      textAlign: "center",
+                      width: "100%",
+                      color: "red",
+                    }}
+                  >
+                    {" "}
+                    There are no videos in this playlist yet
+                  </p>
+                ) : (
+                  <>
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Channel Name</th>
+                        <th>Actions</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    </thead>
+                    <tbody>
+                      {videos.map((video, key) => {
+                        return (
+                          <tr key={video.videoId}>
+                            <td>{video.videoTitle}</td>
+                            <td>{video.videoChannel}</td>
+                            <td>
+                              <Button
+                                style={{ marginRight: "10px" }}
+                                value={video.videoId}
+                                onClick={goToVideo}
+                              >
+                                Go to video
+                              </Button>
+                              <Button
+                                variant="danger"
+                                style={{ marginRight: "10px" }}
+                                value={video.videoId}
+                                onClick={() => {
+                                  handleShowModal();
+                                  setVideoToDeleteId(video.videoId);
+                                }}
+                              >
+                                Delete from playlist
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>{" "}
+                  </>
+                )}
               </Table>
             </Col>
           </Row>

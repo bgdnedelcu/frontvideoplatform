@@ -105,7 +105,7 @@ const Playlist = () => {
 
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
-          <Col sm={4}>
+          <Col className="yourPlaylist" sm={4}>
             <h1>Your Playlists</h1>
           </Col>
         </Row>
@@ -120,19 +120,16 @@ const Playlist = () => {
             >
               <thead>
                 <tr>
-                  <th style={{ width: "50%" }}>Title</th>
-                  <th style={{ width: "50%" }}>Actions</th>
+                  <th className="titleFromPlaylist">Title</th>
+                  <th className="actionsFromPlaylist">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Add Playlist</td>
-                  <td>
-                    Press the right button to create a new playlist{" "}
-                    <Button
-                      style={{ marginLeft: "30px" }}
-                      onClick={handleToggleCreatePlaylistModal}
-                    >
+                  <td className="createAreaPlaylist">
+                    <p>Press the button to create a new playlist </p>
+                    <Button onClick={handleToggleCreatePlaylistModal}>
                       Create new Playlist
                     </Button>
                   </td>
@@ -140,15 +137,15 @@ const Playlist = () => {
                 {playlists.map((playlist, key) => (
                   <tr key={playlist.id}>
                     <td>{playlist.title}</td>
-                    <td>
+                    <td className="actionsPlaylist">
                       <Button
-                        className="buttonFromPlaylist"
+                        className="buttonsPlaylist"
                         onClick={() => goToVideos(playlist.id, playlist.title)}
                       >
                         Explore Videos from playlist
                       </Button>
                       <Button
-                        className="buttonFromPlaylist"
+                        className="buttonsPlaylist"
                         value={playlist.id}
                         onClick={() => {
                           handleToggleEditPlaylistModal();
@@ -158,7 +155,7 @@ const Playlist = () => {
                         Edit Playlist Title
                       </Button>
                       <Button
-                        className="buttonFromPlaylist"
+                        className="buttonsPlaylist"
                         value={playlist.id}
                         variant="danger"
                         onClick={() => {

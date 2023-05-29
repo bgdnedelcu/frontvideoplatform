@@ -8,6 +8,8 @@ import {
   Dropdown,
   ButtonGroup,
 } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Header from "./Header";
@@ -224,7 +226,7 @@ const VideoPage = () => {
             </Popup>
             <Row>
               <Col>
-                <div className="embed-responsive embed-responsive-16by9">
+                <div className="d-flex embed-responsive embed-responsive-16by9">
                   <video
                     className="video embed-responsive-item"
                     controls
@@ -250,6 +252,7 @@ const VideoPage = () => {
                       <Link
                         to={`/channel/${videoChannel}`}
                         state={{ channelVideo: videoChannel }}
+                        className="channelOwner"
                       >
                         {videoChannel}
                       </Link>
@@ -258,14 +261,18 @@ const VideoPage = () => {
                       <div className="like-button">
                         {liked ? (
                           <Button
-                            variant="primary"
+                            variant="outline-primary"
                             className="liked"
                             onClick={undoLike}
                           >
                             Liked ({likes})
                           </Button>
                         ) : (
-                          <Button variant="primary" onClick={addLike}>
+                          <Button
+                            variant="primary"
+                            className="notLiked"
+                            onClick={addLike}
+                          >
                             Like ({likes})
                           </Button>
                         )}
@@ -273,7 +280,11 @@ const VideoPage = () => {
                     )}
                     {JwtService.checkJwt() && (
                       <Dropdown as={ButtonGroup}>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                        <Dropdown.Toggle
+                          variant="primary"
+                          id="dropdown-basic"
+                          className="playlistVideoPage"
+                        >
                           Add in playlist
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -306,12 +317,22 @@ const VideoPage = () => {
                         </p>
                         {!showDescription && (
                           <Button
-                            className="showMore"
                             variant="outline-secondary"
                             size="sm"
+                            style={{ border: "0", borderColor: "transparent" }}
                             onClick={() => setShowDescription(true)}
                           >
-                            Show more
+                            Show more..
+                          </Button>
+                        )}
+                        {showDescription && (
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            style={{ border: "0", borderColor: "transparent" }}
+                            onClick={() => setShowDescription(false)}
+                          >
+                            Show less
                           </Button>
                         )}
                       </>

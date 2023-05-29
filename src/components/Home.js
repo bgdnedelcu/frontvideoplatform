@@ -41,6 +41,8 @@ const Home = () => {
     navigate(videoPath, { state: { videoId } });
   };
 
+  let baseUrl = ClientVideo.VIDEO_MS_URL;
+
   const loadVideos = () => {
     const config = ClientVideo.defaultConfig;
     config["params"] = {
@@ -48,17 +50,18 @@ const Home = () => {
       page: page,
     };
 
-    let baseUrl = ClientVideo.VIDEO_MS_URL;
     if (searchText == null) {
       baseUrl = baseUrl.concat("/home");
     } else {
       baseUrl = baseUrl.concat("/search/").concat(searchText);
     }
+
     if (hasMoreVideos) {
       ClientVideo.loadVideosForHome(baseUrl, config)
         .then((response) => {
           const newVideos = response.data;
           setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+          console.log(response.data.length);
 
           if (baseUrl.includes("search") && response.data.length === 0) {
             setNoResults(true);
@@ -130,6 +133,9 @@ const Home = () => {
   };
 
   const handleScroll = () => {
+    if (baseUrl.includes("search")) {
+      return;
+    }
     if (
       window.innerHeight + document.documentElement.scrollTop ===
       document.documentElement.offsetHeight
@@ -162,40 +168,41 @@ const Home = () => {
             <Col>
               <Table striped bordered hover variant="dark">
                 <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Channel</th>
+                  <tr className="videosTableTr">
+                    <th className="responsive">Title</th>
+                    <th className="responsive">Channel</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {videos.map((video, key) => {
+                  {videos.map((video, index) => {
                     return (
-                      <tr key={video.videoId}>
-                        <td>{video.videoTitle}</td>
+                      <tr key={index}>
+                        <td className="responsive">{video.videoTitle}</td>
                         <td>
                           <Link
                             to={`/channel/${video.videoChannel}`}
                             state={{ channelVideo: video.videoChannel }}
-                            className="linkToChannel"
+                            className="responsive linkToChannel"
                           >
                             {video.videoChannel}
                           </Link>
                         </td>
-                        <td>
+                        <td className="actions">
                           <Button
-                            style={{ marginRight: "10px" }}
+                            className="button1 button-width"
                             value={video.videoId}
                             onClick={play}
                           >
                             Go to video
                           </Button>
-                          <Dropdown as={ButtonGroup}>
+                          <Dropdown as={ButtonGroup} className="button3">
                             <Dropdown.Toggle
                               variant="primary"
                               id="dropdown-basic"
+                              className="button-width"
                             >
-                              Add in playlist
+                              Add to playlist
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                               {playListSet.map((playList, key) => {
@@ -213,7 +220,7 @@ const Home = () => {
                           </Dropdown>
                           {userRole === "admin" && (
                             <Button
-                              style={{ marginLeft: "10px" }}
+                              className="button2 button-width"
                               variant="danger"
                               onClick={() => {
                                 handleDeleteModal();

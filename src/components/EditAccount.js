@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
 import Header from "./Header";
 import ClientUser from "../service/clientUser";
+import CustomAlert from "./CustomAlert";
 
 const EditAccount = () => {
   const [newPassword, setNewPassword] = useState("");
   const [channel, setChannel] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
+  const [wrongPassword, setWrongPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -35,8 +37,16 @@ const EditAccount = () => {
     ClientUser.updateAccount(body)
       .then(() => {
         actionLogout();
+        setWrongPassword(false);
       })
       .catch((err) => {
+        if (err.response.status === 400) {
+          setWrongPassword(true);
+          setTimeout(() => {
+            setWrongPassword(false);
+          }, 2500);
+          return;
+        }
         console.error(err);
       });
   };
@@ -81,6 +91,13 @@ const EditAccount = () => {
             Save
           </Button>
         </Form>
+        {wrongPassword && (
+          <CustomAlert
+            className={"alertUser fixed-bottom alert-danger"}
+            variant={"danger"}
+            message={"Wrong password!"}
+          />
+        )}
       </Container>
     </>
   );

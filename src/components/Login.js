@@ -2,24 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
-import IncompletsFieldsError from "./IncompletsFieldsError";
 import ClientUser from "../service/clientUser";
 
 const Login = () => {
   const [emailInput, setEmail] = useState("");
   const [passwordInput, setPassword] = useState("");
-  const [fieldsIncomplete, setFieldsIncomplete] = useState(false);
   const [error, setError] = useState(false);
   const [shownPassword, setShownPassword] = useState(false);
   const navigate = useNavigate();
 
   const loginAccount = (event) => {
     event.preventDefault();
-
-    if (emailInput === "" || passwordInput === "") {
-      setFieldsIncomplete(true);
-      return;
-    }
 
     const formData = new FormData();
     formData.append("username", emailInput);
@@ -28,7 +21,6 @@ const Login = () => {
     ClientUser.login(formData)
       .then((response) => {
         setError(false);
-        setFieldsIncomplete(false);
 
         const token = response.headers.get("Access-Token");
         localStorage.setItem("token", JSON.stringify(token));
@@ -48,7 +40,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    let fieldsIncompleteTimer, errorTimer;
+    let errorTimer;
 
     if (error) {
       errorTimer = setTimeout(() => {
@@ -56,23 +48,19 @@ const Login = () => {
       }, 5000);
     }
 
-    if (fieldsIncomplete) {
-      fieldsIncompleteTimer = setTimeout(() => {
-        setFieldsIncomplete(false);
-      }, 5000);
-    }
-
     return () => {
       clearTimeout(errorTimer);
-      clearTimeout(fieldsIncompleteTimer);
     };
-  }, [error, fieldsIncomplete]);
+  }, [error]);
 
   return (
-    <Container fluid className="d-flex align-items-center min-vh-100">
+    <Container
+      fluid
+      className="d-flex align-items-center justify-content-center min-vh-100"
+    >
       <Row className="justify-content-center w-100">
         <Col md={6} lg={5} xl={4}>
-          <h1 className="test mb-4">Log in to your account</h1>
+          <h1 className="mb-4">Log in to your account</h1>
           <Form onSubmit={loginAccount}>
             <Form.Group controlId="formBasicEmail" className="mb-3">
               <Form.Label>Email address</Form.Label>
@@ -92,19 +80,25 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-            <Button
-              variant="link"
-              onClick={handleShownPassword}
-              className="p-2 ml-2"
-            >
-              {shownPassword ? "Hide Password" : "Show Password"}
-            </Button>
-            <Button variant="primary" type="submit" className="w-100 mb-3">
-              Log in
-            </Button>
+            <div className="d-flex flex-column align-items-center justify-content-center">
+              <Button
+                variant="link"
+                onClick={handleShownPassword}
+                className="p-2 ml-2 align-self-start"
+              >
+                {shownPassword ? "Hide Password" : "Show Password"}
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!emailInput || !passwordInput}
+                className="w-50 mb-3"
+              >
+                Log in
+              </Button>
+            </div>
           </Form>
           {error && <Alert variant="danger">Invalid email or password</Alert>}
-          {fieldsIncomplete && <IncompletsFieldsError />}
           <p className="text-center">
             <Link to="/register"> Don't have an account? Sign up here</Link>
           </p>

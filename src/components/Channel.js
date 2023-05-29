@@ -27,6 +27,7 @@ const Channel = () => {
   const [userId, setUserId] = useState(null);
   const [videoIdToDelete, setVideoIdToDelete] = useState(undefined);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [noVideosYet, setNoVideos] = useState(false);
 
   const navigate = useNavigate();
   const { channelName } = useParams();
@@ -93,6 +94,9 @@ const Channel = () => {
       ClientVideo.getVideosForChannel(channel)
         .then((response) => {
           setVideos(response.data);
+          if (response.data.length === 0) {
+            setNoVideos(true);
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -173,64 +177,83 @@ const Channel = () => {
                 variant="dark"
                 style={{ tableLayout: "fixed" }}
               >
-                <thead>
-                  <tr>
-                    <th style={{ width: "50%" }}>Title</th>
-                    <th style={{ width: "50%" }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {videos.map((video, key) => {
-                    return (
-                      <tr key={video.videoId}>
-                        <td>{video.videoTitle}</td>
-                        <td>
-                          <Button
-                            style={{ marginRight: "10px" }}
-                            value={video.videoId}
-                            onClick={play}
-                          >
-                            Go to video
-                          </Button>
-                          <Dropdown as={ButtonGroup}>
-                            <Dropdown.Toggle
-                              variant="primary"
-                              id="dropdown-basic"
-                            >
-                              Add in playlist
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              {playListSet.map((playList, key) => {
-                                return (
-                                  <Dropdown.Item
-                                    key={playList.id}
-                                    data-id={playList.id + " " + video.videoId}
-                                    onClick={addToPlaylist.bind(this)}
-                                  >
-                                    {playList.title}
-                                  </Dropdown.Item>
-                                );
-                              })}
-                            </Dropdown.Menu>
-                          </Dropdown>
-                          {(video.userId === userId ||
-                            userRole === "admin") && (
-                            <Button
-                              style={{ marginLeft: "10px" }}
-                              variant="danger"
-                              onClick={() => {
-                                handleDeleteModal();
-                                setVideoIdToDelete(video.videoId);
-                              }}
-                            >
-                              Delete video{" "}
-                            </Button>
-                          )}
-                        </td>
+                {noVideosYet ? (
+                  <p
+                    style={{
+                      display: "inline-block",
+                      textAlign: "center",
+                      width: "100%",
+                      color: "red",
+                    }}
+                  >
+                    {" "}
+                    This channel is empty
+                  </p>
+                ) : (
+                  <>
+                    <thead>
+                      <tr>
+                        <th className="titleFromChannel">Title</th>
+                        <th className="actionsFromChannel">Actions</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    </thead>
+                    <tbody>
+                      {videos.map((video, key) => {
+                        return (
+                          <tr key={video.videoId}>
+                            <td className="responsive">{video.videoTitle}</td>
+                            <td className="actions">
+                              <Button
+                                className="button1 button-width"
+                                value={video.videoId}
+                                onClick={play}
+                              >
+                                Go to video
+                              </Button>
+                              <Dropdown as={ButtonGroup} className="button3">
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  id="dropdown-basic"
+                                  className="button-width"
+                                >
+                                  Add in playlist
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                  {playListSet.map((playList, key) => {
+                                    return (
+                                      <Dropdown.Item
+                                        key={playList.id}
+                                        data-id={
+                                          playList.id + " " + video.videoId
+                                        }
+                                        onClick={addToPlaylist.bind(this)}
+                                      >
+                                        {playList.title}
+                                      </Dropdown.Item>
+                                    );
+                                  })}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                              {(video.userId === userId ||
+                                userRole === "admin") && (
+                                <Button
+                                  className="button2 button-width"
+                                  variant="danger"
+                                  onClick={() => {
+                                    handleDeleteModal();
+                                    setVideoIdToDelete(video.videoId);
+                                  }}
+                                >
+                                  Delete video{" "}
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </>
+                )}
               </Table>
             </div>
           </Col>

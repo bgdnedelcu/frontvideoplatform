@@ -62,17 +62,25 @@ const MobileMenu = () => {
               <span style={{ color: "green" }}> ADMIN</span>
             )}
           </h6>
-          <div className="modal-content">
-            <Button variant="secondary" onClick={goToEditAccount}>
+          <div className="menuButtons">
+            <Button
+              variant="info"
+              className="btn btn-block"
+              onClick={goToEditAccount}
+            >
               Edit Account
             </Button>
-            <Button variant="success" onClick={goToUpload}>
+            <Button variant="success" className="btn" onClick={goToUpload}>
               Upload new video
             </Button>
-            <Button variant="success" onClick={goToPersonalChannel}>
+            <Button
+              variant="primary"
+              className="btn"
+              onClick={goToPersonalChannel}
+            >
               Your channel
             </Button>
-            <Button variant="secondary" onClick={goToPlaylists}>
+            <Button variant="secondary" className="btn" onClick={goToPlaylists}>
               PlayLists
             </Button>
             <Logout />
