@@ -18,7 +18,7 @@ const CustomModal = ({
       </Modal.Header>
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClick}>
+        <Button variant="secondary" onClick={onClick} className="buttonSpace">
           Cancel
         </Button>
         <Button variant={variant} onClick={onClickConfirm}>

@@ -199,7 +199,6 @@ const Home = () => {
                           <Dropdown as={ButtonGroup} className="button3">
                             <Dropdown.Toggle
                               variant="primary"
-                              id="dropdown-basic"
                               className="button-width"
                             >
                               Add to playlist

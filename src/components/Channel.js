@@ -198,9 +198,9 @@ const Channel = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {videos.map((video, key) => {
+                      {videos.map((video, index) => {
                         return (
-                          <tr key={video.videoId}>
+                          <tr key={index}>
                             <td className="responsive">{video.videoTitle}</td>
                             <td className="actions">
                               <Button
@@ -213,7 +213,6 @@ const Channel = () => {
                               <Dropdown as={ButtonGroup} className="button3">
                                 <Dropdown.Toggle
                                   variant="primary"
-                                  id="dropdown-basic"
                                   className="button-width"
                                 >
                                   Add in playlist

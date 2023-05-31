@@ -134,7 +134,7 @@ const Playlist = () => {
                     </Button>
                   </td>
                 </tr>
-                {playlists.map((playlist, key) => (
+                {playlists.map((playlist) => (
                   <tr key={playlist.id}>
                     <td>{playlist.title}</td>
                     <td className="actionsPlaylist">

@@ -207,6 +207,10 @@ body {
   gap: 10px
 }
 
+.buttonSpace {
+  padding: 5px;
+}
+
 .buttonsPlaylist {
   padding: 8px
 }
@@ -218,6 +222,7 @@ body {
 
 .channelOwner {
   font-size: 25px;
+  text-decoration: none;
 }
 
 .yourPlaylist {
@@ -277,7 +282,7 @@ body {
   }
 
   .like-button button.notLiked {
-    font-size: x-small;
+    font-size: xx-small;
     margin-right: 5px;
   }
 
@@ -285,5 +290,8 @@ body {
     font-size: 20px;
   }
 
+  #dropdown-basic {
+    font-size: x-small;
+  }
 
 }
