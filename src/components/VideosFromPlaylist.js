@@ -110,20 +110,20 @@ const VideosFromPlayList = () => {
           </Row>
           <Row>
             <Col>
-              <Table striped bordered hover variant="dark">
-                {noVideosYet ? (
-                  <p
-                    style={{
-                      display: "inline-block",
-                      textAlign: "center",
-                      width: "100%",
-                      color: "red",
-                    }}
-                  >
-                    {" "}
-                    There are no videos in this playlist yet
-                  </p>
-                ) : (
+              {noVideosYet ? (
+                <p
+                  style={{
+                    display: "inline-block",
+                    textAlign: "center",
+                    width: "100%",
+                    color: "red",
+                  }}
+                >
+                  {" "}
+                  There are no videos in this playlist yet
+                </p>
+              ) : (
+                <Table striped bordered hover variant="dark">
                   <>
                     <thead>
                       <tr>
@@ -163,8 +163,8 @@ const VideosFromPlayList = () => {
                       })}
                     </tbody>{" "}
                   </>
-                )}
-              </Table>
+                </Table>
+              )}
             </Col>
           </Row>
           <CustomModal

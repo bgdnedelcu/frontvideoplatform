@@ -10,9 +10,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background-image: url("eagle.png");
-  background-repeat: no-repeat;
-  background-size: cover; */
 }
 
 .header {
@@ -205,6 +202,10 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: 10px
+}
+
+.noPlaylists {
+  text-align: center;
 }
 
 .buttonSpace {

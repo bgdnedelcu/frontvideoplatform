@@ -1,7 +1,7 @@
 import axios from "axios";
 import JwtService from "./jwtservice";
 
-const USER_MS_URL = "http://localhost:8080/videoplatform/api/account";
+const USER_MS_URL = "http://192.168.1.240:8080/videoplatform/api/account";
 
 const defaultConfig = {
   headers: { Authorization: JwtService.addAuthorization() },

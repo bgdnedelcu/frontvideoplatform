@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import Header from "./Header";
-import IncompletsFieldsError from "./IncompletsFieldsError";
 import ClientVideo from "../service/clientVideo";
 
 const UploadVideo = () => {
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
-  const [fieldsIncomplete, setFieldsIncomplete] = useState(false);
   const [succes, setSucces] = useState(false);
 
   const handleTitleChange = (e) => {
@@ -25,11 +23,6 @@ const UploadVideo = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (videoTitle === "" || videoDescription === "" || selectedFile === null) {
-      setFieldsIncomplete(true);
-      return;
-    }
 
     const formData = new FormData();
     formData.append("title", videoTitle);
@@ -50,20 +43,6 @@ const UploadVideo = () => {
       setSucces(false);
     }, 5000);
   };
-
-  useEffect(() => {
-    let fieldsIncompleteTimer;
-
-    if (fieldsIncomplete) {
-      fieldsIncompleteTimer = setTimeout(() => {
-        setFieldsIncomplete(false);
-      }, 5000);
-    }
-
-    return () => {
-      clearTimeout(fieldsIncompleteTimer);
-    };
-  }, [fieldsIncomplete]);
 
   return (
     <>
@@ -97,11 +76,14 @@ const UploadVideo = () => {
             <Form.Label>Select Video File</Form.Label>
             <Form.Control type="file" onChange={handleFileSelect} />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={!videoTitle || !videoDescription || !selectedFile}
+          >
             Upload
           </Button>
         </Form>
-        {fieldsIncomplete && <IncompletsFieldsError />}
         {succes && (
           <div>
             <Alert

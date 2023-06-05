@@ -6,17 +6,6 @@ const parseJwt = (token) => {
   }
 };
 
-const checkJwtTime = () => {
-  const token = JSON.parse(localStorage.getItem("token"));
-  if (token) {
-    const decodedJwt = parseJwt(token);
-    if (decodedJwt.exp * 1000 < Date.now()) {
-      return true;
-    }
-  }
-  return false;
-};
-
 const checkJwt = () => {
   const token = JSON.parse(localStorage.getItem("token"));
   if (token) return true;
@@ -49,7 +38,6 @@ const addAuthorization = () => {
 
 const JwtService = {
   getRole,
-  checkJwtTime,
   addAuthorization,
   getUser,
   checkJwt,

@@ -224,10 +224,10 @@ const Channel = () => {
                                     Add in playlist
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu>
-                                    {playListSet.map((playList, key) => {
+                                    {playListSet.map((playList, index) => {
                                       return (
                                         <Dropdown.Item
-                                          key={playList.id}
+                                          key={index}
                                           data-id={
                                             playList.id + " " + video.videoId
                                           }

@@ -33,7 +33,6 @@ const EditAccount = () => {
       newPassword: newPassword,
       newChannelName: channel,
     };
-
     ClientUser.updateAccount(body)
       .then(() => {
         actionLogout();
@@ -54,7 +53,7 @@ const EditAccount = () => {
   const actionLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
-    window.location.reload();
+    navigate(0);
   };
 
   return (

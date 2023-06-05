@@ -28,6 +28,7 @@ const Home = () => {
   const [videoIdToDelete, setVideoIdToDelete] = useState(undefined);
   const [noResults, setNoResults] = useState(false);
   const [hasMoreVideos, setHasMoreVideos] = useState(true);
+  const [noPlaylistsYet, setNoPlaylistsYet] = useState(false);
 
   const { searchText } = useParams();
   const navigate = useNavigate();
@@ -61,7 +62,6 @@ const Home = () => {
         .then((response) => {
           const newVideos = response.data;
           setVideos((prevVideos) => [...prevVideos, ...newVideos]);
-          console.log(response.data.length);
 
           if (baseUrl.includes("search") && response.data.length === 0) {
             setNoResults(true);
@@ -82,6 +82,9 @@ const Home = () => {
     ClientUser.getPlaylistsByEmailFromToken()
       .then((response) => {
         setPlayListSet(response.data);
+        if (response.data.length === 0) {
+          setNoPlaylistsYet(true);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -203,18 +206,25 @@ const Home = () => {
                             >
                               Add to playlist
                             </Dropdown.Toggle>
+
                             <Dropdown.Menu>
-                              {playListSet.map((playList, key) => {
-                                return (
-                                  <Dropdown.Item
-                                    key={playList.id}
-                                    data-id={playList.id + " " + video.videoId}
-                                    onClick={addToPlaylist.bind(this)}
-                                  >
-                                    {playList.title}
-                                  </Dropdown.Item>
-                                );
-                              })}
+                              {noPlaylistsYet ? (
+                                <p className="noPlaylists">No playlists yet</p>
+                              ) : (
+                                playListSet.map((playList, index) => {
+                                  return (
+                                    <Dropdown.Item
+                                      key={index}
+                                      data-id={
+                                        playList.id + " " + video.videoId
+                                      }
+                                      onClick={addToPlaylist.bind(this)}
+                                    >
+                                      {playList.title}
+                                    </Dropdown.Item>
+                                  );
+                                })
+                              )}
                             </Dropdown.Menu>
                           </Dropdown>
                           {userRole === "admin" && (

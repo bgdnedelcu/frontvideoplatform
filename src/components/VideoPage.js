@@ -36,6 +36,7 @@ const VideoPage = () => {
   const [succesAddComment, setSuccesCommentAdded] = useState(false);
   const [errorVideoAlreadyInPlaylist, setError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [noPlaylistsYet, setNoPlaylistsYet] = useState(false);
 
   const { videoId } = useParams();
   const navigate = useNavigate();
@@ -114,6 +115,9 @@ const VideoPage = () => {
       ClientUser.getPlaylistsByEmailFromToken()
         .then((response) => {
           setPlayListSet(response.data);
+          if (response.data.length === 0) {
+            setNoPlaylistsYet(true);
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -286,17 +290,21 @@ const VideoPage = () => {
                           Add in playlist
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          {playListSet.map((playList, key) => {
-                            return (
-                              <Dropdown.Item
-                                key={playList.id}
-                                data-id={playList.id + " " + videoId}
-                                onClick={addToPlaylist.bind(this)}
-                              >
-                                {playList.title}
-                              </Dropdown.Item>
-                            );
-                          })}
+                          {noPlaylistsYet ? (
+                            <p className="noPlaylists">No playlists yet</p>
+                          ) : (
+                            playListSet.map((playList, key) => {
+                              return (
+                                <Dropdown.Item
+                                  key={playList.id}
+                                  data-id={playList.id + " " + videoId}
+                                  onClick={addToPlaylist.bind(this)}
+                                >
+                                  {playList.title}
+                                </Dropdown.Item>
+                              );
+                            })
+                          )}
                         </Dropdown.Menu>
                       </Dropdown>
                     )}
