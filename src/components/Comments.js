@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import JwtService from "../service/jwtservice";
@@ -61,6 +61,13 @@ const Comments = ({
     }, 2500);
   };
 
+  const setCommentId = (id) => {
+    if (id !== commnetToDeleteId) {
+      setCommnetToDeleteId(id);
+    }
+    return;
+  };
+
   useEffect(() => {
     const userRole = JwtService.getRole();
     setUserRole(userRole);
@@ -94,7 +101,7 @@ const Comments = ({
                   className="deleteCommentButton"
                   onClick={() => {
                     handleDeleteModal();
-                    setCommnetToDeleteId(comment.idComment);
+                    setCommentId(comment.idComment);
                   }}
                 >
                   Delete comment
@@ -106,7 +113,7 @@ const Comments = ({
                     className="deleteCommentButton"
                     onClick={() => {
                       handleDeleteModal();
-                      setCommnetToDeleteId(comment.idComment);
+                      setCommentId(comment.idComment);
                     }}
                   >
                     Delete your comment

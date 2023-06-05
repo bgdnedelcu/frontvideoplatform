@@ -15,7 +15,8 @@ const CreatePlaylist = ({
     titleInput = text;
   };
 
-  const createPlaylist = () => {
+  const createPlaylist = (e) => {
+    e.preventDefault();
     const body = {
       title: titleInput,
     };
@@ -41,7 +42,7 @@ const CreatePlaylist = ({
         <Modal.Title>Create Playlist</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={createPlaylist}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Playlist title</Form.Label>
             <Form.Control
@@ -53,10 +54,10 @@ const CreatePlaylist = ({
           </Form.Group>
           <div className="createPlayButtons">
             <Button
-              type="button"
+              type="submit"
               variant="primary"
-              onClick={() => {
-                createPlaylist();
+              onClick={(e) => {
+                createPlaylist(e);
                 handleModal();
               }}
             >

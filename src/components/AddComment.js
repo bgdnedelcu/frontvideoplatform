@@ -9,18 +9,18 @@ const AddComment = ({
   handleMessages,
 }) => {
   const [content, setContent] = useState("");
-  const [commentError, setCommentError] = useState(false);
-  const [lengthError, setLengtError] = useState(false);
+  const [emptyContentError, setEmptyContentError] = useState(false);
+  const [lengthError, setLengthError] = useState(false);
 
   const saveComment = (event) => {
     event.preventDefault();
     if (!content.trim()) {
-      setCommentError(true);
+      setEmptyContentError(true);
       return;
     }
 
     if (content.length > 600) {
-      setLengtError(true);
+      setLengthError(true);
       return;
     }
 
@@ -28,8 +28,8 @@ const AddComment = ({
       .then(() => {
         onCommentAdded();
         setSuccesCommentAdded(true);
-        setCommentError(false);
-        setLengtError(false);
+        setEmptyContentError(false);
+        setLengthError(false);
         handleMessages();
       })
       .catch((error) => {
@@ -44,9 +44,9 @@ const AddComment = ({
 
   const changeContent = (event) => {
     setContent(event.target.value);
-    setCommentError(false);
+    setEmptyContentError(false);
     if (content.length <= 600) {
-      setLengtError(false);
+      setLengthError(false);
     }
   };
 
@@ -58,7 +58,7 @@ const AddComment = ({
             <Form.Control
               as="textarea"
               className={
-                commentError
+                emptyContentError
                   ? "is-invalid"
                   : "" || (lengthError && "is-invalid")
               }
@@ -67,7 +67,7 @@ const AddComment = ({
               value={content}
               onChange={changeContent}
             />
-            {commentError && (
+            {emptyContentError && (
               <Form.Control.Feedback type="invalid">
                 The comment cannot be empty.
               </Form.Control.Feedback>

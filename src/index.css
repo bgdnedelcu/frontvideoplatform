@@ -233,6 +233,12 @@ body {
 
 @media screen and (max-width: 992px) {
 
+  .test {
+    height: 50px;
+    width: 250px;
+    font-size: 15px;
+  }
+
   .responsive,
   .linkToChannel,
   .videosTableTr {
@@ -261,8 +267,6 @@ body {
   .button-width {
     width: 130px;
   }
-
-
 
   .createAreaPlaylist {
     display: flex;

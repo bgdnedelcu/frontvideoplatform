@@ -98,10 +98,10 @@ const Login = () => {
               </Button>
             </div>
           </Form>
-          {error && <Alert variant="danger">Invalid email or password</Alert>}
           <p className="text-center">
             <Link to="/register"> Don't have an account? Sign up here</Link>
           </p>
+          {error && <Alert variant="danger">The account was not found</Alert>}
         </Col>
       </Row>
     </Container>

@@ -3,7 +3,7 @@ import { Alert } from "react-bootstrap";
 
 const CustomAlert = ({ className, variant, message }) => {
   return (
-    <Alert className={className} variant={variant}>
+    <Alert className={`${className} test`} variant={variant}>
       {message}
     </Alert>
   );

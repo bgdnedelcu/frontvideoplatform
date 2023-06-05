@@ -8,14 +8,16 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const submitSearch = () => {
+  const submitSearch = (e) => {
+    e.preventDefault();
     const videoPath = `/search/${searchText}`;
     navigate(videoPath);
+    navigate(0);
   };
 
   const goToHome = () => {
     navigate("/home");
-    window.location.reload();
+    navigate(0);
   };
 
   return (
@@ -36,10 +38,13 @@ const Header = () => {
               className="mr-2 search-field"
               aria-label="Search"
               name="search"
-              formMethod="post"
               onChange={(e) => setSearchText(e.target.value)}
             />
-            <Button variant="outline-success" type="submit">
+            <Button
+              variant="outline-success"
+              type="submit"
+              onClick={submitSearch}
+            >
               Search
             </Button>
           </Form>
