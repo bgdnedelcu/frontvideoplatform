@@ -102,7 +102,6 @@ const Playlist = () => {
   return (
     <>
       <Header />
-
       <Container className="playlistTable">
         <Row className="justify-content-md-center">
           <Col className="yourPlaylist" sm={4}>

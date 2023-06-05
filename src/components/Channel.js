@@ -30,6 +30,7 @@ const Channel = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [noVideosYet, setNoVideos] = useState(false);
   const [channelExists, setChannelExists] = useState(true);
+  const [noPlaylistsYet, setNoPlaylistsYet] = useState(false);
 
   const navigate = useNavigate();
   const { channelName } = useParams();
@@ -84,6 +85,9 @@ const Channel = () => {
       ClientUser.getPlaylistByEmailFromToken()
         .then((response) => {
           setPlayListSet(response.data);
+          if (response.data.length === 0) {
+            setNoPlaylistsYet(true);
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -224,19 +228,25 @@ const Channel = () => {
                                     Add in playlist
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu>
-                                    {playListSet.map((playList, index) => {
-                                      return (
-                                        <Dropdown.Item
-                                          key={index}
-                                          data-id={
-                                            playList.id + " " + video.videoId
-                                          }
-                                          onClick={addToPlaylist.bind(this)}
-                                        >
-                                          {playList.title}
-                                        </Dropdown.Item>
-                                      );
-                                    })}
+                                    {noPlaylistsYet ? (
+                                      <p className="noPlaylists">
+                                        No playlists yet
+                                      </p>
+                                    ) : (
+                                      playListSet.map((playList, index) => {
+                                        return (
+                                          <Dropdown.Item
+                                            key={index}
+                                            data-id={
+                                              playList.id + " " + video.videoId
+                                            }
+                                            onClick={addToPlaylist.bind(this)}
+                                          >
+                                            {playList.title}
+                                          </Dropdown.Item>
+                                        );
+                                      })
+                                    )}
                                   </Dropdown.Menu>
                                 </Dropdown>
                                 {(video.userId === userId ||

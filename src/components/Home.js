@@ -206,7 +206,6 @@ const Home = () => {
                             >
                               Add to playlist
                             </Dropdown.Toggle>
-
                             <Dropdown.Menu>
                               {noPlaylistsYet ? (
                                 <p className="noPlaylists">No playlists yet</p>
