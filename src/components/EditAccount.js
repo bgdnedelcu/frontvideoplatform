@@ -86,7 +86,12 @@ const EditAccount = () => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </Form.Group>
-          <Button variant="primary" type="button" onClick={submitChanges}>
+          <Button
+            variant="primary"
+            type="button"
+            onClick={submitChanges}
+            disabled={!channel || !newPassword || !currentPassword}
+          >
             Save
           </Button>
         </Form>

@@ -24,7 +24,7 @@ const Login = () => {
 
         const token = response.headers.get("Access-Token");
         localStorage.setItem("token", JSON.stringify(token));
-        navigate("/search");
+        navigate("/home");
         window.location.reload();
       })
       .catch((error) => {

@@ -221,6 +221,11 @@ body {
   gap: 10px;
 }
 
+.createPlayButtons {
+  display: flex;
+  gap: 10px
+}
+
 .channelOwner {
   font-size: 25px;
   text-decoration: none;
