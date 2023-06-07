@@ -235,7 +235,7 @@ const Home = () => {
                                 setVideoIdToDelete(video.videoId);
                               }}
                             >
-                              Delete video{" "}
+                              Delete video
                             </Button>
                           )}
                         </td>
@@ -279,7 +279,6 @@ const Home = () => {
           <div className="d-flex align-items-center justify-content-center vh-100">
             <div className="text-center">
               <p className="fs-3">
-                {" "}
                 <span className="text-danger">Opps!</span> No results.
               </p>
               <p className="lead">There are no videos based on your search.</p>
