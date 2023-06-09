@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Alert } from "react-bootstrap";
-import Header from "./Header";
-import NotFound from "./NotFound";
-import ClientVideo from "../service/clientVideo";
-import ClientUser from "../service/clientUser";
-import CustomModal from "./CustomModal";
+import Header from "../helpers/Header";
+import NotFound from "../helpers/NotFound";
+import ClientVideo from "../../service/clientVideo";
+import ClientUser from "../../service/clientUser";
+import CustomModal from "../customs/CustomModal";
 
 const VideosFromPlayList = () => {
   const [videos, setVideos] = useState([]);

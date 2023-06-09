@@ -10,14 +10,14 @@ import {
 } from "react-bootstrap";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import Header from "./Header";
-import AddComment from "./AddComment";
-import Comments from "./Comments";
-import NotFound from "./NotFound";
-import JwtService from "../service/jwtservice";
-import ClientVideo from "../service/clientVideo";
-import ClientUser from "../service/clientUser";
-import CustomAlert from "./CustomAlert";
+import Header from "../helpers/Header";
+import AddComment from "../comments/AddComment";
+import Comments from "../comments/Comments";
+import NotFound from "../helpers/NotFound";
+import JwtService from "../../service/jwtservice";
+import ClientVideo from "../../service/clientVideo";
+import ClientUser from "../../service/clientUser";
+import CustomAlert from "../customs/CustomAlert";
 
 const VideoPage = () => {
   const [videoUrl, setVideoUrl] = useState("");

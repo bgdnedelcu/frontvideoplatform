@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ClientVideo from "../service/clientVideo";
+import ClientVideo from "../../service/clientVideo";
 import { Form, Button, Row, Col } from "react-bootstrap";
 
 const AddComment = ({

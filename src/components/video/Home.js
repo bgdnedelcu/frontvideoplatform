@@ -10,12 +10,12 @@ import {
   Dropdown,
   ButtonGroup,
 } from "react-bootstrap";
-import Header from "./Header";
-import JwtService from "../service/jwtservice";
-import ClientVideo from "../service/clientVideo";
-import ClientUser from "../service/clientUser";
-import CustomModal from "./CustomModal";
-import CustomAlert from "./CustomAlert";
+import Header from "../helpers/Header";
+import JwtService from "../../service/jwtservice";
+import ClientVideo from "../../service/clientVideo";
+import ClientUser from "../../service/clientUser";
+import CustomModal from "../customs/CustomModal";
+import CustomAlert from "../customs/CustomAlert";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);

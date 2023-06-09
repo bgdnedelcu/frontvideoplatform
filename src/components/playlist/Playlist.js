@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
-import Header from "./Header";
+import Header from "../helpers/Header";
 import CreatePlaylist from "./CreatePlaylist";
 import EditPlaylist from "./EditPlaylist";
-import ClientUser from "../service/clientUser";
-import ClientVideo from "../service/clientVideo";
-import CustomModal from "./CustomModal";
-import CustomAlert from "./CustomAlert";
+import ClientUser from "../../service/clientUser";
+import ClientVideo from "../../service/clientVideo";
+import CustomModal from "../customs/CustomModal";
+import CustomAlert from "../customs/CustomAlert";
 
 const Playlist = () => {
   const [playlists, setPlayListSet] = useState([]);

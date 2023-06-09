@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
-import Header from "./Header";
-import ClientVideo from "../service/clientVideo";
+import Header from "../helpers/Header";
+import ClientVideo from "../../service/clientVideo";
 
 const UploadVideo = () => {
   const [videoTitle, setVideoTitle] = useState("");

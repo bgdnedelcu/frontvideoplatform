@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { Alert } from "react-bootstrap";
-import ClientUser from "../service/clientUser";
+import ClientUser from "../../service/clientUser";
 
 const Login = () => {
   const [emailInput, setEmail] = useState("");

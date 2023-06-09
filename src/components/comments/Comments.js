@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import JwtService from "../service/jwtservice";
-import ClientVideo from "../service/clientVideo";
-import CustomModal from "./CustomModal";
+import JwtService from "../../service/jwtservice";
+import ClientVideo from "../../service/clientVideo";
+import CustomModal from "../customs/CustomModal";
 
 const Comments = ({
   videoId,

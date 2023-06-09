@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import CustomModal from "./CustomModal";
+import CustomModal from "../customs/CustomModal";
 
 const Logout = () => {
   const [show, setShow] = useState(false);

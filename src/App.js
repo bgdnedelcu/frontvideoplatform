@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./index.css";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import VideoPage from "./components/VideoPage";
-import Home from "./components/Home";
-import UploadVideo from "./components/UploadVideo";
-import Playlist from "./components/Playlist";
-import VideosFromPlayList from "./components/VideosFromPlaylist";
-import Channel from "./components/Channel";
-import NotFound from "./components/NotFound";
-import EditAccount from "./components/EditAccount";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Register from "./components/user/Register";
+import Login from "./components/user/Login";
+import VideoPage from "./components/video/VideoPage";
+import Home from "./components/video/Home";
+import UploadVideo from "./components/video/UploadVideo";
+import Playlist from "./components/playlist/Playlist";
+import VideosFromPlayList from "./components/playlist/VideosFromPlaylist";
+import Channel from "./components/user/Channel";
+import NotFound from "./components/helpers/NotFound";
+import EditAccount from "./components/user/EditAccount";
+import ProtectedRoute from "./components/helpers/ProtectedRoute";
 import JwtService from "./service/jwtservice";
 
 function App() {

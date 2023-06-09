@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import Logout from "./Logout";
-import JwtService from "../service/jwtservice";
-import ClientUser from "../service/clientUser";
+import Logout from "../user/Logout";
+import JwtService from "../../service/jwtservice";
+import ClientUser from "../../service/clientUser";
 
 const MobileMenu = () => {
   const [show, setShow] = useState(false);

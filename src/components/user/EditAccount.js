@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
-import Header from "./Header";
-import ClientUser from "../service/clientUser";
-import CustomAlert from "./CustomAlert";
+import Header from "../helpers/Header";
+import ClientUser from "../../service/clientUser";
+import CustomAlert from "../customs/CustomAlert";
 
 const EditAccount = () => {
   const [newPassword, setNewPassword] = useState("");

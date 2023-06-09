@@ -9,13 +9,13 @@ import {
   Dropdown,
   ButtonGroup,
 } from "react-bootstrap";
-import Header from "./Header";
-import ClientUser from "../service/clientUser";
-import ClientVideo from "../service/clientVideo";
-import JwtService from "../service/jwtservice";
-import CustomAlert from "./CustomAlert";
-import CustomModal from "./CustomModal";
-import NotFound from "./NotFound";
+import Header from "../helpers/Header";
+import ClientUser from "../../service/clientUser";
+import ClientVideo from "../../service/clientVideo";
+import JwtService from "../../service/jwtservice";
+import CustomAlert from "../customs/CustomAlert";
+import CustomModal from "../customs/CustomModal";
+import NotFound from "../helpers/NotFound";
 
 const Channel = () => {
   const [videos, setVideos] = useState([]);
@@ -179,27 +179,27 @@ const Channel = () => {
           </Row>
           <Row>
             <Col>
-              <div className="table-responsive">
-                <Table
-                  striped
-                  bordered
-                  hover
-                  variant="dark"
-                  style={{ tableLayout: "fixed" }}
+              {noVideosYet ? (
+                <p
+                  style={{
+                    display: "inline-block",
+                    textAlign: "center",
+                    width: "100%",
+                    color: "red",
+                  }}
                 >
-                  {noVideosYet ? (
-                    <p
-                      style={{
-                        display: "inline-block",
-                        textAlign: "center",
-                        width: "100%",
-                        color: "red",
-                      }}
-                    >
-                      {" "}
-                      This channel is empty
-                    </p>
-                  ) : (
+                  {" "}
+                  This channel is empty
+                </p>
+              ) : (
+                <div className="table-responsive">
+                  <Table
+                    striped
+                    bordered
+                    hover
+                    variant="dark"
+                    style={{ tableLayout: "fixed" }}
+                  >
                     <>
                       <thead>
                         <tr>
@@ -268,9 +268,9 @@ const Channel = () => {
                         })}
                       </tbody>
                     </>
-                  )}
-                </Table>
-              </div>
+                  </Table>
+                </div>
+              )}
             </Col>
           </Row>
           <CustomModal

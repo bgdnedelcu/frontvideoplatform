@@ -1,10 +1,10 @@
-import React from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import ClientUser from "../service/clientUser";
+import ClientUser from "../../service/clientUser";
 
-const CreatePlaylist = ({
+const EditPlaylist = ({
   handleModal,
   show,
+  playlistId,
   triggerRerender,
   setSuccesMessage,
   handleMessages,
@@ -15,13 +15,11 @@ const CreatePlaylist = ({
     titleInput = text;
   };
 
-  const createPlaylist = (e) => {
-    e.preventDefault();
-    const body = {
-      title: titleInput,
-    };
+  const editPlaylistTitle = () => {
+    const formData = new FormData();
+    formData.append("title", titleInput);
 
-    ClientUser.createNewPlayList(body)
+    ClientUser.editPlaylist(formData, playlistId)
       .then(() => {
         triggerRerender();
         setSuccesMessage(true);
@@ -30,7 +28,6 @@ const CreatePlaylist = ({
       .catch((err) => {
         console.error(err);
       });
-
     setTimeout(() => {
       setSuccesMessage(false);
     }, 2500);
@@ -39,25 +36,25 @@ const CreatePlaylist = ({
   return (
     <Modal show={show} onHide={handleModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Create Playlist</Modal.Title>
+        <Modal.Title>Edit playlist title</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={createPlaylist}>
+        <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Playlist title</Form.Label>
+            <Form.Label>Enter new playlist title</Form.Label>
             <Form.Control
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter playlist title"
+              placeholder="New title"
               type="text"
               autoFocus
             />
           </Form.Group>
           <div className="createPlayButtons">
             <Button
-              type="submit"
+              type="button"
               variant="primary"
-              onClick={(e) => {
-                createPlaylist(e);
+              onClick={() => {
+                editPlaylistTitle();
                 handleModal();
               }}
             >
@@ -73,4 +70,4 @@ const CreatePlaylist = ({
   );
 };
 
-export default CreatePlaylist;
+export default EditPlaylist;

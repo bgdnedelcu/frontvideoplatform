@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import ClientUser from "../service/clientUser";
-import CustomAlert from "./CustomAlert";
+import ClientUser from "../../service/clientUser";
+import CustomAlert from "../customs/CustomAlert";
 
 const Register = () => {
   const [emailInput, setEmail] = useState("");
